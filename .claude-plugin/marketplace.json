@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "fantasy-football-skills",
+  "description": "Fantasy football decision-support skills for Claude Code: draft strategy, waiver wire, trade analysis, and browser-driven roster operations.",
+  "owner": {
+    "name": "<github-user>",
+    "url": "https://github.com/<github-user>"
+  },
+  "plugins": [
+    {
+      "name": "setup",
+      "source": "./plugins/setup",
+      "description": "One-time league interview that writes a leagues.md config file every other skill reads. Install this first."
+    },
+    {
+      "name": "draft-strategy",
+      "source": "./plugins/draft-strategy",
+      "description": "Draft prep and live-draft decision support: tiered boards, value-based drafting, best-available logic, and keeper math."
+    },
+    {
+      "name": "waiver-wire",
+      "source": "./plugins/waiver-wire",
+      "description": "In-season roster churn: waiver scans matched to your roster holes, FAAB bid sizing, and safe drop candidates."
+    },
+    {
+      "name": "trade-analyzer",
+      "source": "./plugins/trade-analyzer",
+      "description": "Two-sided trade evaluation, league-wide trade finding, and counteroffer reasoning."
+    },
+    {
+      "name": "roster-ops",
+      "source": "./plugins/roster-ops",
+      "description": "Browser-automation playbooks that set lineups, submit waiver claims, and propose trades in your own logged-in session. Never touches credentials; always confirms before submitting."
+    }
+  ]
+}

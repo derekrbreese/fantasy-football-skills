@@ -1,0 +1,15 @@
+{
+  "name": "setup",
+  "description": "One-time league configuration interview. Writes a leagues.md file to your project that every other fantasy-football-skills skill reads for scoring, roster, and waiver context.",
+  "version": "1.0.0",
+  "author": {
+    "name": "<github-user>",
+    "url": "https://github.com/<github-user>"
+  },
+  "license": "MIT",
+  "keywords": [
+    "fantasy-football",
+    "configuration",
+    "setup"
+  ]
+}

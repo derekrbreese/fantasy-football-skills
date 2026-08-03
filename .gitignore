@@ -1,0 +1,14 @@
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Personal league config — never commit real league details
+leagues.md
+
+# Local Claude Code state
+.claude/settings.local.json
+*.local.md
+
+# Editor
+.vscode/
+.idea/

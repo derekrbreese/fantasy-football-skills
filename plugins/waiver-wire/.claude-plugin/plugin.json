@@ -1,0 +1,16 @@
+{
+  "name": "waiver-wire",
+  "description": "In-season waiver wire decision support: free-agent scans ranked against your roster's actual holes, FAAB bid sizing calibrated to your budget and league history, and drop candidates with bye-week and playoff-schedule awareness.",
+  "version": "1.0.0",
+  "author": {
+    "name": "<github-user>",
+    "url": "https://github.com/<github-user>"
+  },
+  "license": "MIT",
+  "keywords": [
+    "fantasy-football",
+    "waivers",
+    "faab",
+    "free-agents"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "trade-analyzer",
+  "description": "Fantasy football trade decision support: two-sided trade evaluation that accounts for standings and positional need, league-wide scans for complementary trade partners, and counteroffer negotiation reasoning.",
+  "version": "1.0.0",
+  "author": {
+    "name": "<github-user>",
+    "url": "https://github.com/<github-user>"
+  },
+  "license": "MIT",
+  "keywords": [
+    "fantasy-football",
+    "trades",
+    "negotiation"
+  ]
+}

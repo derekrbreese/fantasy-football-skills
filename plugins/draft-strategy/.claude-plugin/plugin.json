@@ -1,0 +1,16 @@
+{
+  "name": "draft-strategy",
+  "description": "Fantasy football draft decision support: tiered draft boards built from your rankings, value-based drafting adjusted for your league's roster settings, live best-available guidance, and keeper cost math.",
+  "version": "1.0.0",
+  "author": {
+    "name": "<github-user>",
+    "url": "https://github.com/<github-user>"
+  },
+  "license": "MIT",
+  "keywords": [
+    "fantasy-football",
+    "draft",
+    "rankings",
+    "keeper"
+  ]
+}
