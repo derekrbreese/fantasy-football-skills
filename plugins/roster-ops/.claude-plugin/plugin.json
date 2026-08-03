@@ -3,8 +3,8 @@
   "description": "Browser-automation playbooks for executing roster moves (set lineup, submit waiver claim, propose trade) in the user's own logged-in browser session. Yahoo-first with ESPN and Sleeper variants. Never handles credentials and always pauses for explicit user confirmation before any submit or confirm click.",
   "version": "1.0.0",
   "author": {
-    "name": "<github-user>",
-    "url": "https://github.com/<github-user>"
+    "name": "derekrbreese",
+    "url": "https://github.com/derekrbreese"
   },
   "license": "MIT",
   "keywords": [

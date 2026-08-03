@@ -5,7 +5,7 @@ A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-market
 ## Install
 
 ```
-claude plugin marketplace add <github-user>/fantasy-football-skills
+claude plugin marketplace add derekrbreese/fantasy-football-skills
 ```
 
 Then install any plugin (start with `setup`):

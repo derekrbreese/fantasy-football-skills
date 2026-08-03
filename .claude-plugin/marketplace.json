@@ -3,8 +3,8 @@
   "name": "fantasy-football-skills",
   "description": "Fantasy football decision-support skills for Claude Code: draft strategy, waiver wire, trade analysis, and browser-driven roster operations.",
   "owner": {
-    "name": "<github-user>",
-    "url": "https://github.com/<github-user>"
+    "name": "derekrbreese",
+    "url": "https://github.com/derekrbreese"
   },
   "plugins": [
     {
