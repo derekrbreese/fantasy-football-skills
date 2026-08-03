@@ -12,6 +12,9 @@ File a specific waiver claim or free-agent add in the user's own logged-in brows
 - **The user's session is the auth.** Never ask for, read, store, or type usernames, passwords, or 2FA codes. On a login page: stop, ask the user to log in themselves, resume after.
 - **Navigate by goals and landmarks**, not memorized selectors — find controls by visible text ("Add", "Claim", "Continue") and page structure, and read the page when unsure.
 - **Confirmation gate** before the click that files the transaction. Navigation, search, and opening the claim form are fair game.
+- **The confirmation must post-date the summary.** It has to arrive in a user message *after* the review-screen summary is shown, in the same turn as the click. An instruction given before the browser was open — including "and submit it" — authorizes building the claim, never filing it. A reply that alters any term ("yes, but make it $25") is a **modification, not a confirmation**: apply it, re-read the screen, present a fresh summary.
+- **Never retry a submit click.** If the result is unclear, re-read the page to determine whether the claim was filed. Never click Submit a second time — a duplicate claim can spend the budget twice.
+- **If the page doesn't match the described landmark, stop.** Read it, describe what's visible, and ask the user to identify the control. Never click a control not positively identified by its visible text.
 - If no browser tooling is available in the session, say so and walk the user through the clicks instead.
 
 ## Phase 1: Assemble the claim
@@ -29,7 +32,7 @@ Collect before touching the browser — ask for whatever is missing:
 2. **Find the player**: use the search box with the exact name. Verify identity by name **and** NFL team/position before proceeding. Landmark: the player row shows an availability marker — "FA" (free agent) or "W" with a date (on waivers until then).
 3. **Open the claim**: click the add/claim control (a "+" or "Add" on the player row). Yahoo walks a short flow: choose the **drop** player if the roster is full → enter the **FAAB bid** if applicable. Fill both from Phase 1.
 4. **Review screen**: Yahoo shows a summary (add, drop, bid, process date) before finalizing.
-5. **⛔ CONFIRMATION GATE**: read the summary back to the user verbatim — "Claim Silas Okafor (RB), drop Ironhogs DST, bid $37 of your $124, processes Wed" — and wait for an explicit yes. Only then click Submit/Confirm.
+5. **⛔ CONFIRMATION GATE**: read the summary back to the user verbatim, including the bid as digits and as a share of the budget shown *on the page* — "Claim Silas Okafor (RB), drop Ironhogs DST, bid $42 — four two — of your $124 remaining, processes Wed" — and wait for an explicit yes. Only then click Submit/Confirm. If any figure on screen differs from what was agreed in Phase 1 by any amount, stop and surface it; never correct it silently.
 6. **Verify**: navigate to the pending claims area (Yahoo lists pending waiver claims on the My Team/Transactions page). Confirm the claim appears with the right players and bid; report it. Immediate FA adds: verify the player now appears on the roster instead.
 
 ## Platform variants

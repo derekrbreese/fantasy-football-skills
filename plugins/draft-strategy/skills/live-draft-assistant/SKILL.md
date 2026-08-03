@@ -19,7 +19,12 @@ Maintain throughout, and restate briefly every few picks:
 
 - **Picks made** — the user reports picks ("Vellum went 1.03", "I took Renner"). Cross players off the board; log which team took them when the user says.
 - **User's roster so far** — filled slots vs. required starters.
-- **Snake math** — picks until the user's next turn: from pick `p` in an N-team snake, the user at slot `s` picks at `round×N` offsets; compute and always show "you pick again in X selections."
+- **Snake math** — in an N-team snake at slot `s`, the gap to the next turn alternates by round parity:
+  - After an **odd**-round pick (order runs 1→N): the next turn is `2 × (N − s) + 1` selections later.
+  - After an **even**-round pick (order runs N→1): the next turn is `2 × s − 1` selections later.
+  - Pick labels flip too: slot `s` picks `s` in odd rounds and `N − s + 1` in even rounds.
+  - Third-round reversal, if the league uses it: round 3 runs reversed, so compute round 3 onward with the parity swapped.
+  - Always show "you pick again in X selections."
 
 ## On-the-clock recommendation logic
 
@@ -40,7 +45,7 @@ When the user asks "who should I pick," answer in this order:
 
 12-team snake, user at slot 7, pick 3.07 ("Gridiron Gazette" league). Roster so far: RB Tobias Renner, WR Cassius Bell.
 
-> **Pick now: Errol Fontaine (RB, Tier 3, VBD +54).** He's the last Tier 3 RB; 13 picks until your next turn and RB tiers won't survive that. Best WR available (Deion Marsette, Tier 2, ADP 3.10) is one of four left in his tier — at least one should return at 4.06. Reach check: Fontaine at ADP 3.09 is on schedule. Bye note: Fontaine shares week 9 with Renner — acceptable, but avoid a third week-9 bye.
+> **Pick now: Errol Fontaine (RB, Tier 3, VBD +54).** He's the last Tier 3 RB; 11 picks until your next turn (odd round, `2 × (12 − 7) + 1`) and RB tiers won't survive that. Best WR available (Deion Marsette, Tier 2, ADP 3.10) is one of four left in his tier — at least one should return at 4.06. Reach check: Fontaine at ADP 3.09 is on schedule. Bye note: Fontaine shares week 9 with Renner — acceptable, but avoid a third week-9 bye.
 
 ## Auction variant
 
