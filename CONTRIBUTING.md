@@ -19,9 +19,17 @@ description: This skill should be used when the user asks "phrase one", "phrase 
 ---
 ```
 
-- **Triggers must not overlap.** Every natural phrase routes to exactly one skill in the marketplace. Check the README table before choosing phrases; if your skill is adjacent to an existing one (e.g., advice vs. execution), name the boundary explicitly in both descriptions.
+- **Triggers must not overlap.** Every natural phrase routes to exactly one skill in the marketplace. The authoritative list is the `description` frontmatter of every existing `SKILL.md` — not the README table, which shows only a couple of phrases per skill. Grep the descriptions before choosing yours:
+
+  ```
+  grep -h '^description:' plugins/*/skills/*/SKILL.md
+  ```
+
+  If your skill is adjacent to an existing one (advice vs. execution is the common case), name the boundary explicitly in both descriptions. When writing a "Not for X" clause, describe the sibling's job at a slightly higher altitude than its own trigger phrases — "Not for bid amounts" rather than "Not for sizing the bid" — so the clause doesn't hand the other skill's literal keywords to yours.
+- **Keep rules and worked examples consistent.** When a skill's example contradicts its own stated rule, the model follows the example. If an example needs an exception, write the exception into the rule.
 - Write the body in imperative form ("Read leagues.md first", not "You should read...").
-- Skills that need league context must read `leagues.md` from the project root first and fall back to asking (or point to the setup plugin's league-config skill).
+- Skills that need league context must read `leagues.md` from the project root first, fall back to asking when it's missing or blank, point at `fantasy-league-setup:league-config` to persist the answers, and honor the `(default)` marker when multiple leagues are defined. Copy the wording from an existing skill verbatim — the contract should read identically everywhere.
+- Refer to sibling skills by their full `plugin:skill` name, since that's how Claude Code addresses them. Plugins install independently, so phrase handoffs conditionally: if the other plugin isn't installed, do the work inline instead of telling the user to run something they don't have.
 - Worked examples use **fictional players and fictional league names** only. No real league names, no personal endpoints, no references to any specific person's setup.
 - Browser-automation skills (roster-ops style) must: navigate by goals and landmarks rather than brittle selectors, never handle credentials (the user's session is the auth), and pause for explicit user confirmation before any submit/confirm click.
 

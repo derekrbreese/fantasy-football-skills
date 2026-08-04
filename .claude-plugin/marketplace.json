@@ -1,36 +1,50 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "fantasy-football-skills",
-  "description": "Fantasy football decision-support skills for Claude Code: draft strategy, waiver wire, trade analysis, and browser-driven roster operations.",
+  "description": "Fantasy football decision-support skills for Claude Code: draft strategy, weekly start/sit, waiver wire, trade analysis, and browser-driven roster operations.",
   "owner": {
     "name": "derekrbreese",
     "url": "https://github.com/derekrbreese"
   },
+  "renames": {
+    "setup": "fantasy-league-setup"
+  },
   "plugins": [
     {
-      "name": "setup",
-      "source": "./plugins/setup",
-      "description": "One-time league interview that writes a leagues.md config file every other skill reads. Install this first."
+      "name": "fantasy-league-setup",
+      "source": "./plugins/fantasy-league-setup",
+      "description": "One-time league interview that writes a leagues.md config file every other skill reads. Install this first.",
+      "category": "productivity"
     },
     {
       "name": "draft-strategy",
       "source": "./plugins/draft-strategy",
-      "description": "Draft prep and live-draft decision support: tiered boards, value-based drafting, best-available logic, and keeper math."
+      "description": "Draft prep and live-draft decision support: tiered boards, value-based drafting, best-available logic, and keeper math.",
+      "category": "productivity"
+    },
+    {
+      "name": "lineup-strategy",
+      "source": "./plugins/lineup-strategy",
+      "description": "Weekly start/sit calls: head-to-head player comparisons, flex decisions, and floor-vs-ceiling reasoning. No browser needed.",
+      "category": "productivity"
     },
     {
       "name": "waiver-wire",
       "source": "./plugins/waiver-wire",
-      "description": "In-season roster churn: waiver scans matched to your roster holes, FAAB bid sizing, and safe drop candidates."
+      "description": "In-season roster churn: waiver scans matched to your roster holes, FAAB bid sizing, and safe drop candidates.",
+      "category": "productivity"
     },
     {
       "name": "trade-analyzer",
       "source": "./plugins/trade-analyzer",
-      "description": "Two-sided trade evaluation, league-wide trade finding, and counteroffer reasoning."
+      "description": "Two-sided trade evaluation, league-wide trade finding, and counteroffer reasoning.",
+      "category": "productivity"
     },
     {
       "name": "roster-ops",
       "source": "./plugins/roster-ops",
-      "description": "Browser-automation playbooks that set lineups, submit waiver claims, and propose trades in your own logged-in session. Never touches credentials; always confirms before submitting."
+      "description": "Browser-automation playbooks that set lineups, submit waiver claims, and propose trades in your own logged-in session. Never touches credentials; always confirms before submitting.",
+      "category": "productivity"
     }
   ]
 }

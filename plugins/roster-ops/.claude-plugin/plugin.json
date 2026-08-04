@@ -1,15 +1,21 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "roster-ops",
   "description": "Browser-automation playbooks for executing roster moves (set lineup, submit waiver claim, propose trade) in the user's own logged-in browser session. Yahoo-first with ESPN and Sleeper variants. Never handles credentials and always pauses for explicit user confirmation before any submit or confirm click.",
   "author": {
     "name": "derekrbreese",
     "url": "https://github.com/derekrbreese"
   },
+  "homepage": "https://github.com/derekrbreese/fantasy-football-skills",
+  "repository": "https://github.com/derekrbreese/fantasy-football-skills",
   "license": "MIT",
   "keywords": [
     "fantasy-football",
     "browser-automation",
     "lineup",
     "computer-use"
+  ],
+  "dependencies": [
+    "fantasy-league-setup"
   ]
 }

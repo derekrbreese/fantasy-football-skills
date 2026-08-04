@@ -21,14 +21,18 @@ Required (advice quality degrades without these):
 - **League name** — used as the section header so multiple leagues can coexist
 - **Platform** — `yahoo`, `espn`, `sleeper`, or `other` (drives the roster-ops browser playbooks)
 - **Teams** — league size (drives replacement-level math)
-- **Scoring** — `standard`, `half-ppr`, or `ppr`; plus modifiers: TE premium, superflex/2QB, points per carry, big-play bonuses, IDP
+- **Scoring** — `standard`, `half-ppr`, or `ppr`; plus modifiers with their **magnitudes**, not just flags: TE premium (+0.5 or +1.0 per reception is a materially different league), superflex/2QB, points per passing TD (4 vs 6), points per carry, big-play bonuses, IDP
+- **Median scoring / all-play**, if used — it rewards consistency over ceiling and changes what "contender" means
 - **Starting roster slots** — e.g., `1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX (RB/WR/TE), 1 K, 1 DST`
 - **Bench size** and IR slots
-- **Waiver system** — `faab` (record the season budget and whether $0 bids are allowed) or `rolling-priority`; waiver processing day if known
+- **Waiver system** — `faab` (record the season budget and whether $0 bids are allowed) or `rolling-priority`; the processing day, whether waivers run weekly or continuously/daily, and the tie-break rule for equal bids
+- **Acquisition limits** — any cap on adds per week or per season. Common on Yahoo and ESPN, and it changes waiver and drop advice substantially, so ask explicitly rather than assuming none
 
 Optional (ask, but accept "skip"):
 
-- **Playoff weeks** — e.g., weeks 15–17 (drives drop-candidates and trade timing)
+- **Playoff weeks** — e.g., weeks 15–17 (drives drop-candidates, start/sit, and trade timing). Also ask how many teams make it, whether top seeds get a first-round bye, and what the seeding tiebreaker is — a points-for tiebreaker changes start/sit decisions in blowouts
+- **Trade review** — none, commissioner review, or a league veto vote. Veto leagues need trades that *look* balanced, not just ones that are
+- **FAAB tradeable?** — some platforms allow trading waiver budget, which unlocks real strategy for both contenders and eliminated teams
 - **Keeper rules** — how many keepers, cost mechanism (round-based, auction dollar, escalating)
 - **Trade deadline** week
 - **The user's team name** — so skills can tell "my roster" apart in exports the user pastes

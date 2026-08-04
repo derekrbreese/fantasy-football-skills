@@ -1,6 +1,6 @@
 ---
 name: trade-finder
-description: This skill should be used when the user asks "find me a trade", "who should I target in a trade", "scan the league for trade partners", "who needs what in my league", "help me get a running back via trade", or wants trade ideas without a specific offer on the table. Scans all league rosters for complementary surpluses and drafts a concrete opening proposal. Not for judging an existing offer (trade-evaluation), handling the back-and-forth (trade-negotiation), or sending the offer in the browser (roster-ops propose-trade).
+description: This skill should be used when the user asks "find me a trade", "who should I target in a trade", "scan the league for trade partners", "who needs what in my league", "help me get a running back via trade", "is he a buy low", "should I sell high on him", or wants trade ideas without a specific offer on the table. Scans league rosters for complementary surpluses and mispriced players, then drafts a concrete opening proposal. Not for judging an existing offer (trade-analyzer trade-evaluation), handling the back-and-forth (trade-analyzer trade-negotiation), or sending the offer in the browser (roster-ops propose-trade).
 ---
 
 # Trade Finder: Complementary Surplus Scan
@@ -9,7 +9,7 @@ Find the trades that *should* exist in this league: pairs of rosters where each 
 
 ## Step 1: Load context
 
-Read `leagues.md` (scoring, starters, trade deadline, playoff weeks). Gather every roster in the league plus standings — pasted, or fetched via an available league integration. A partial league scan is fine; say which teams weren't scanned.
+Read `leagues.md` from the project root first — the fields that matter here are scoring, starting slots, trade deadline, and playoff weeks. If the file is missing or those fields are blank, ask for them directly and suggest running the `fantasy-league-setup:league-config` skill to persist the answers. If `leagues.md` defines more than one league, use the one marked `(default)` unless the user names another. Gather every roster in the league plus standings — pasted, or fetched via an available league integration. A partial league scan is fine; say which teams weren't scanned.
 
 ## Step 2: Build the surplus/deficit matrix
 
@@ -17,28 +17,42 @@ For each team, at each position, compare **startable-quality players rostered vs
 
 - Surplus: more week-in, week-out startable players than slots (+1 or more).
 - Deficit: a starting slot filled by waiver-tier production.
+- **Weight surplus by replenishment.** A third startable WR is worth less than a third startable RB, because the wire refills WR and does not refill RB. Position-blind surplus counting overvalues exactly the pieces that are easiest to replace.
 - Note bye/playoff-schedule pressure: a team about to hit a triple-bye week has a *temporary* deficit worth exploiting gently.
+
+## Step 2b: Scan for mispriced players — where the repeatable money is
+
+Structural surplus finds trades that *should* exist. Mispricing finds trades that are *profitable*. Run both.
+
+The principle is the same one that governs waiver adds: opportunity is sticky, efficiency is not.
+
+- **Sell** a player whose touchdown rate is running well above his career or expected rate over a 4+ week sample, whose yards per touch far exceed his norms, or whose fantasy rank sits well above his target/carry share. His price will never be higher and the production is not repeatable.
+- **Buy** a player whose target or carry share is top-15 at his position while his points rank sits outside the top 30. The volume is real; the results will follow.
+
+Name these candidates explicitly on both rosters — they are the pieces to build the offer around.
 
 ## Step 3: Rank partner fit
 
 Score each rival as a partner:
 
 1. **Complementarity** (required): their surplus covers the user's deficit AND the user's surplus covers one of theirs. One-directional need means the user must overpay — deprioritize.
-2. **Motivation**: bubble teams (records near .500) trade most; first-place teams trade least; eliminated redraft teams trade almost never (and such trades draw scrutiny). Deadline proximity raises everyone's urgency.
+2. **Motivation**: bubble teams (records near .500) trade most; first-place teams trade least. Eliminated redraft managers usually stop trading out of **disengagement, not incentive** — so a clear, low-effort offer can still land. In keeper or dynasty formats the reverse holds: eliminated teams are a contender's best partners, since future value is worth more to them than this season's points.
 3. **History**, if the user knows it: managers who've already made trades this season will trade again.
+4. **Avoid arming your competition**: deprioritize the team directly chasing your playoff seed, and the team you play next week.
 
 ## Step 4: Draft the opening proposal
 
 For the top partner, construct a specific offer:
 
-- Trade **from surplus into deficit on both sides** — the offer should improve both starting lineups (verify with the lineup-delta test from trade-evaluation thinking: value that doesn't reach a lineup isn't real to either side).
-- Open slightly in the user's favor but inside the plausible range — an insulting opener burns the partner permanently; a too-fair opener leaves no negotiating room. Target roughly a 10–15% raw-value edge, never more.
+- Trade **from surplus into deficit on both sides** — the offer should improve both starting lineups (verify with the lineup-delta test: value that doesn't reach a lineup isn't real to either side).
+- **Gate the opener on their lineup improving, not on a value percentage.** An offer that visibly upgrades the other team's starting lineup is never insulting regardless of what a value chart says; an offer that doesn't improve their lineup is insulting at any ratio. That is the real constraint.
+- Given that gate, **open at a 20–25% raw-value edge.** Counters always come back toward the middle, so a 12% opener closes near even or dies — the same anchoring logic the negotiation skill applies defensively applies here on offense. Anything below the lineup-improvement bar is not an opener at any price.
 - Include the pitch: two sentences the user can send explaining why it helps *the other team*, referencing their situation ("you've got three startable RBs and a WR2 hole and the deadline's in two weeks").
 - Offer 1–2 backup constructions (a smaller version, and a version with a different sweetener) for the negotiation to come.
 
 ## Step 5: Hand off
 
-Suggest trade-evaluation to pressure-test the final construction, trade-negotiation when the reply comes back, and roster-ops propose-trade to actually send it.
+Suggest `trade-analyzer:trade-evaluation` to pressure-test the construction, `trade-analyzer:trade-negotiation` when the reply comes back, and `roster-ops:propose-trade` to send it. If a plugin isn't installed, do that work inline instead.
 
 ## Worked example (fictional)
 
@@ -50,4 +64,4 @@ Suggest trade-evaluation to pressure-test the final construction, trade-negotiat
 | Blitz Krieg | 6-2 | WR | RB | One-way (user has no WR hole) — skip |
 | Fumble Bees | 2-6 | QB | everything | Motivated but nothing user needs — skip |
 
-> **Opening offer to Turf Burns**: send RB Errol Fontaine (user's RB4, their instant RB2 upgrade), receive TE Oren Vasquez. Pitch: "You're one RB from a playoff push and I'm streaming TE — Fontaine starts for you Sunday." Value edge ~12% to the user (elite TE premium in this league's TE-premium scoring). Fallback: swap in RB Dewey Sandoval + a bench WR if they balk at value; smaller version targets their backup TE instead.
+> **Opening offer to Turf Burns**: send RB Errol Fontaine (user's RB4, their instant RB2 upgrade), receive TE Oren Vasquez. **Lineup gate passes** — Fontaine steps straight into their waiver-tier RB2 slot, so this visibly improves their starters and is not an insulting opener regardless of the value split. Value edge ~22% to the user (elite TE in TE-premium scoring), which is the right opening anchor: expect them to counter for a sweetener and to close nearer 10%. Pitch: "You're one RB from a playoff push and I'm streaming TE — Fontaine starts for you Sunday." Fallbacks: add RB Dewey Sandoval if they balk; smaller version targets their backup TE instead.

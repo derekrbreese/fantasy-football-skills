@@ -1,49 +1,72 @@
 ---
 name: waiver-scan
-description: This skill should be used when the user asks to "work the wire", "scan the waiver wire", "who should I pick up", "best free agents for my team", "waiver targets this week", "who's worth adding", or wants available players ranked against their roster. Ranks free agents by fit with the user's actual roster holes rather than generic top-add lists. Not for sizing the bid (faab-bidding), choosing who to cut (drop-candidates), or submitting the claim in the browser (roster-ops submit-waiver-claim).
+description: This skill should be used when the user asks to "work the wire", "who should I pick up", "scan the waiver wire", "best free agents for my team", "wire targets this week", "who's worth adding", "my guy got hurt, now what", "who replaces him", or "should I stream a defense". Ranks available players by fit with the user's actual roster holes rather than generic top-add lists. Not for bid amounts (waiver-wire faab-bidding), cut decisions (waiver-wire drop-candidates), weekly lineup calls (lineup-strategy start-sit), or browser execution (roster-ops submit-waiver-claim).
 ---
 
 # Waiver Scan: Fit Over Fame
 
-Rank available players against **this roster's holes**, not a generic top-adds list. A backup RB one injury from a workload is worth more to a team with a thin RB room than the "consensus #1 add" WR is to a team starting three good WRs.
+Rank available players against **this roster's holes**, not a generic top-adds list. A backup RB one injury from a workload is worth more to a team with a thin RB room than the "consensus #1 add" WR is to a team already starting three good ones.
 
 ## Step 1: Load context
 
-Read `leagues.md` (scoring, starters, waiver system, playoff weeks). If missing, ask for scoring type and starting slots minimally, and suggest the setup plugin's league-config skill.
+Read `leagues.md` from the project root first — the fields that matter here are scoring, starting slots, waiver system, playoff weeks, and any weekly acquisition cap. If the file is missing or those fields are blank, ask for them and suggest running `fantasy-league-setup:league-config`. If more than one league is defined, use the one marked `(default)`.
+
+An acquisition cap changes everything downstream: where adds are limited, each claim must clear a much higher bar and churning streamers is off the table.
 
 ## Step 2: Get the two inputs
 
-1. **The user's roster** — pasted, or fetched if a league-data integration is available in the session. Include current week and any injury designations the user knows.
-2. **The available player pool** — a pasted free-agent list from their platform (easiest: sort by rostered% or weekly points and paste the top 30–50), or fetched if an integration is available. Without a pool list, give the *profile* of what to target ("your hole is RB depth — target any back whose starter just got hurt") and ask for the list to name names.
+1. **The user's roster** — pasted, or fetched if a league-data integration is available. Include the current week and any injury designations.
+2. **The available player pool** — a pasted free-agent list (easiest: sort by rostered% or recent points and paste the top 30–50), or fetched if available. Without a pool list, describe the *profile* to target ("your hole is RB depth — target any back whose starter just landed on IR") and ask for the list to name names.
 
 ## Step 3: Diagnose roster holes
 
-Order of severity:
+In severity order:
 
-1. **Unfillable starting slot** — a bye/injury leaves a required slot empty this week. Must fix now.
-2. **Weakest weekly starter** — the starting slot with the lowest expected points relative to positional average. This is the upgrade target.
-3. **Missing insurance** — no viable backup behind a starter position where one injury zeroes the slot (typically RB).
-4. **Bye-week wall** — a future week where 2+ starters at one position sit. Fix 1–2 weeks ahead, not four.
+1. **Unfillable starting slot** — a bye, injury, or suspension leaves a required slot empty this week. Fix now.
+2. **Weakest weekly starter** — the slot with the lowest expected points relative to positional average. This is the upgrade target.
+3. **Missing insurance** — no viable backup behind a starter whose absence would zero a slot (usually RB).
+4. **Bye-week wall** — a future week with 2+ starters out at one position. Fix 1–2 weeks ahead, not four.
 
 ## Step 4: Score each available player
 
-For each candidate, score fit = opportunity × role match:
+**Opportunity outranks talent for in-season adds.** In order: depth-chart promotion (starter injured, traded, or benched), snap/route share trending up over 2+ weeks, red-zone and target share, and efficiency **last** — chasing one big game is how waiver budgets are wasted.
 
-- **Opportunity signals outrank talent for in-season adds.** In order: depth-chart promotion (starter injured/traded), snap or route share trending up over 2+ weeks, red-zone/target share, efficiency last (chasing one big game is how waivers are wasted).
-- **Role match**: does the player address hole #1 or #2, or just add a redundant 5th WR? A candidate addressing an unfillable slot beats a "better" player who'd ride the bench.
-- **Schedule**: for playoff-bound teams (check standings if the user shares them), weight weeks 15–17 matchups; for teams fighting for a spot, weight the next 3 weeks only.
-- Streaming slots (DST, K, sometimes QB/TE): rank purely by next-week matchup; season-long pedigree is irrelevant.
+Concrete thresholds, since "trending up" is not actionable on its own:
 
-## Step 5: Deliver ranked claims
+- **WR**: route participation above ~70%, or a target share above ~20%.
+- **RB**: snap share above ~60%, or clear goal-line work regardless of snaps.
+- **TE**: route participation above ~65% — TE production is role-driven, so snaps matter more than matchup.
 
-Output a priority-ordered claim list: player, the hole he fills, the signal justifying him, and a claim priority note. Then hand off: "for bid amounts, run faab-bidding; for who to cut, run drop-candidates; to actually file the claim in the browser, run submit-waiver-claim."
+A player crossing these lines is startable regardless of name recognition; a famous player below them is not.
+
+**Then weigh:**
+
+- **Role match** — does this address hole #1 or #2, or add a redundant fifth WR? A candidate filling an unfillable slot beats a "better" player who would ride the bench.
+- **The second-order add.** When a starter goes down, the whole league bids on the direct backup. The profitable claim is often the *complement* — the pass-catching back in a committee, or the WR3 absorbing vacated targets. Same information, a fraction of the cost. Always name this alternative when a headline injury happens.
+- **Returning players.** One of the highest-value plays of the season is stashing a player the week *before* he's activated off IR, while the market still ignores him. Watch for practice-window openings and designated-to-return news.
+- **Schedule** — for playoff-bound teams, weight the league's configured playoff weeks; for teams fighting for a spot, weight the next three weeks only.
+
+## Step 5: Streaming (DST, K, and sometimes QB/TE)
+
+Rank streamers by matchup, using inputs that actually predict:
+
+- **The opposing offense's Vegas implied team total** is the single best one-number input for a defense. Low implied total, good stream.
+- Then: opposing turnover-prone QB or a backup starting, opposing offensive-line injuries, home/away, and pass-rush matchup.
+- For kickers: the kicker's own team implied total, plus dome or fair weather. Wind above roughly 20 mph is the one weather condition that reliably matters.
+
+**Stream as a plan, not a reaction.** Look 3–4 weeks ahead and claim the defense with the best upcoming stretch *before* the market prices it, rather than paying up every week. Pair this with never rostering two defenses except for a pre-staged swap.
+
+## Step 6: Deliver ranked claims
+
+Output a priority-ordered list: player, the hole he fills, the signal justifying him, and a priority note. Then hand off — for bid amounts run `waiver-wire:faab-bidding`, for who to cut run `waiver-wire:drop-candidates`, and to file the claim in the browser run `roster-ops:submit-waiver-claim`. If a plugin isn't installed, do the work inline instead and tell the user where the clicks are.
 
 ## Worked example (fictional)
 
-"Mud Dogs" roster in a 12-team half-PPR: RBs are Tobias Renner + two dart throws; WR room is strong; TE Oren Vasquez on bye week 9.
+"Mud Dogs," 12-team half-PPR. RBs are Tobias Renner plus two dart throws; WR room is strong; TE Oren Vasquez on bye week 9.
 
-Available pool includes WR Deion Marsette (consensus top add, 22% rostered) and RB Silas Okafor (backup elevated to starter after an injury, 8% rostered).
+Pool includes WR Deion Marsette (consensus top add, 22% rostered) and RB Silas Okafor (elevated after the starter landed on IR, 8% rostered).
 
-> 1. **RB Silas Okafor** — fills hole #3 (no RB insurance) and likely hole #2 (upgrade over both dart throws). Signal: projected lead role, 65% snaps in relief last week. Claim priority: high — lead-back roles don't reach next week's wire.
-> 2. **TE Harlan Pruitt** — one-week stream for Vasquez's week-9 bye (hole #1 next week). Low bid, can wait a week if the pool is stable.
-> 3. *Skip* WR Deion Marsette despite consensus rank — he'd be your WR5. Fit beats fame; let a WR-needy rival spend on him.
+> 1. **RB Silas Okafor** — fills hole #3 (no RB insurance) and likely hole #2. Signal: 65% snap share in relief plus goal-line work, both above threshold, and the starter is on IR so the role is durable. Priority: high — lead-back roles don't reach next week's wire.
+> 2. **RB Colby Trask** — the second-order add. He's the pass-catching complement in that same backfield, rostered in 2% of leagues, and will absorb third-down work Okafor doesn't. A fraction of Okafor's price for a real share of the vacated touches.
+> 3. **TE Harlan Pruitt** — one-week stream for Vasquez's week-9 bye (hole #1 next week). Minimum bid; can wait if the pool is stable.
+> 4. *Skip* WR Deion Marsette despite the consensus rank — he'd be your WR5 and never crack the lineup. Fit beats fame; let a WR-needy rival spend on him.

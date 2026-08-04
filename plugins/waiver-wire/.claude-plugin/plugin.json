@@ -1,15 +1,21 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "waiver-wire",
   "description": "In-season waiver wire decision support: free-agent scans ranked against your roster's actual holes, FAAB bid sizing calibrated to your budget and league history, and drop candidates with bye-week and playoff-schedule awareness.",
   "author": {
     "name": "derekrbreese",
     "url": "https://github.com/derekrbreese"
   },
+  "homepage": "https://github.com/derekrbreese/fantasy-football-skills",
+  "repository": "https://github.com/derekrbreese/fantasy-football-skills",
   "license": "MIT",
   "keywords": [
     "fantasy-football",
     "waivers",
     "faab",
     "free-agents"
+  ],
+  "dependencies": [
+    "fantasy-league-setup"
   ]
 }

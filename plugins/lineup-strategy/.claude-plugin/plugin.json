@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "lineup-strategy",
+  "description": "Weekly start/sit decision support: who to start, head-to-head player comparisons, flex decisions, and floor-vs-ceiling calls based on whether you are favored or an underdog. Advice only — pairs with roster-ops to execute the change.",
+  "author": {
+    "name": "derekrbreese",
+    "url": "https://github.com/derekrbreese"
+  },
+  "homepage": "https://github.com/derekrbreese/fantasy-football-skills",
+  "repository": "https://github.com/derekrbreese/fantasy-football-skills",
+  "license": "MIT",
+  "keywords": ["fantasy-football", "start-sit", "lineup", "weekly"],
+  "dependencies": ["fantasy-league-setup"]
+}

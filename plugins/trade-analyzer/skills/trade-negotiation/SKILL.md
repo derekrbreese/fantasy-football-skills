@@ -9,7 +9,7 @@ Turn a stalled or countered trade into a closed deal — or a clean walk-away. T
 
 ## Step 1: Establish the negotiation state
 
-Gather: the offer history so far (every version, in order), the current offer on the table, what the other manager has *said* (their words carry their priorities), and both teams' standings. Read `leagues.md` for deadline and playoff weeks — the deadline is the clock every negotiation runs on.
+Gather: the offer history so far (every version, in order), the current offer on the table, what the other manager has *said* (their words carry their priorities), and both teams' standings. Read `leagues.md` from the project root for the trade deadline, playoff weeks, and trade-review method — the deadline is the clock every negotiation runs on. If the file is missing or those fields are blank, ask for them directly and suggest running the `fantasy-league-setup:league-config` skill to persist the answers. If `leagues.md` defines more than one league, use the one marked `(default)` unless the user names another.
 
 ## Step 2: Set the walk-away before countering
 
@@ -27,6 +27,7 @@ Before drafting any counter, compute (with trade-evaluation logic) the **minimum
 - **One concession per round**, and always attach a condition: "I'll add Sandoval if we swap your Pruitt in for the backup TE." Free concessions teach the partner to keep waiting.
 - **Change the shape when price-stuck**: expand 1-for-1 into 2-for-2 (lets both sides win a lineup slot), or move the surplus piece — a different player of similar value may fit their roster better and cost the user less.
 - **Deadline lever**: name a real expiry tied to a real event ("before Sunday's games — after that Fontaine's price changes"). Never bluff an expiry; leagues remember.
+- **Develop a second partner before negotiating hard.** Having a genuine alternative for the same roster hole is the strongest legitimate leverage in fantasy trading — it makes the walk-away credible because it *is* credible. Build it before you need it, and never fabricate one.
 
 ## Step 5: Frame every message as their win
 
@@ -35,11 +36,14 @@ The counter-message the user sends should lead with what the other side gains ("
 ## Step 6: Close or walk
 
 - Close when the current version ≥ the minimum acceptable version and momentum is converging — accept promptly; extracting the last 2% risks the whole deal.
+- **In veto-vote leagues, optics are a closing condition.** A genuinely fair deal that *looks* lopsided gets vetoed anyway. Once terms are agreed, consider restructuring toward apparent balance — a token piece each direction changes nothing materially and removes the pretext. Check `leagues.md` for whether the league uses league votes or commissioner review.
 - Walk when two consecutive rounds circle below the walk-away line. Exit warmly ("can't make this one work — flag me if your RB situation changes") — preserved rapport is the option value on every future trade.
-- Then suggest roster-ops propose-trade to submit the final agreed version.
+- Then suggest `roster-ops:propose-trade` to submit the final agreed version. If that plugin isn't installed, tell the user the clicks instead.
 
 ## Worked example (fictional)
 
 "Turf Burns" countered the user's Fontaine-for-Vasquez offer: they want Fontaine **plus** WR Jalen Moss for Vasquez. User's walk-away (from trade-evaluation): giving Fontaine + any startable WR loses more lineup points than the elite TE adds — Moss is over the line, a bench piece is not.
 
-> They kept the structure — they want this trade; it's a price haggle. Counter (one concession, conditioned, smallest piece): "Can't do Moss — he starts for me. **Fontaine + Dewey Sandoval for Vasquez**, and Sandoval's been getting goal-line looks. Good until Sunday — after this week I'm just streaming TE and keeping the RBs." That concedes a bench RB (small), holds the headline, attaches a soft real deadline, and frames their gain. If they circle back to Moss again: walk, warmly.
+> They kept the structure — they want this trade; it's a price haggle. Counter (one concession, conditioned, smallest piece): "Can't do Moss — he starts for me. I can do **Fontaine + Dewey Sandoval for Vasquez** *if* you include your backup TE so I'm not streaming the position while Vasquez is on bye. Sandoval's been getting goal-line looks. Good until Sunday — after this week I'm just streaming TE and keeping the RBs."
+>
+> That concedes a bench RB (the smallest piece), holds the headline player, **attaches a condition to the concession** rather than giving it away, sets a soft but real deadline, and frames their gain. If they circle back to Moss again: walk, warmly.

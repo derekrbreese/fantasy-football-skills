@@ -1,47 +1,71 @@
 ---
 name: keeper-evaluation
-description: This skill should be used when the user asks "who should I keep", "which keepers should I pick", "is he worth keeping at that price", "keeper value", "what does keeping him cost me", or needs to compare keeper candidates before a draft. Runs keeper cost versus ADP math to rank keeper candidates by surplus value. Not for building the draft board itself (draft-prep) or in-draft picks (live-draft-assistant).
+description: This skill should be used when the user asks "who should I keep", "which keepers should I pick", "is he worth keeping at that price", "keeper value", "what does keeping him cost me", or needs to compare keeper candidates before a draft. Runs keeper cost versus market value math to rank keeper candidates by surplus. Not for building the draft board itself (draft-strategy draft-prep) or in-draft picks (draft-strategy live-draft-assistant).
 ---
 
 # Keeper Evaluation
 
-Rank the user's keeper candidates by **surplus value**: what the player is worth minus what keeping them costs. A good keeper is a player priced below market, not simply the best player on the roster.
+Rank keeper candidates by **surplus value**: what the player is worth minus what keeping them costs. A good keeper is one priced below market, not simply the best player on the roster.
 
 ## Step 1: Load context
 
-Read `leagues.md` first — the keeper rules line (how many keepers, cost mechanism, escalation) and scoring/roster settings. If keeper rules aren't recorded, ask: How many keepers? What does keeping a player cost (a draft round, an auction dollar amount)? Does the cost escalate year over year? Then offer to save the answers back to `leagues.md`.
+Read `leagues.md` from the project root first — the fields that matter here are keeper rules (how many, cost mechanism, escalation), teams, scoring, and starting slots. If the file is missing or keeper rules aren't recorded, ask: How many keepers? What does keeping a player cost (a draft round, an auction dollar amount)? Does the cost escalate year over year? Then offer to save the answers back to `leagues.md`. If more than one league is defined, use the one marked `(default)` unless the user names another.
 
-## Step 2: Gather candidates
+## Step 2: Gather candidates and price them
 
-For each candidate the user is weighing: player, keeper cost (round or $), and current ADP or the user's own ranking. Ask the user to supply ADP or fetch current consensus ADP if web access is available (state the source and date).
+For each candidate: player, keeper cost (round or $), and current ADP or auction market value. Ask the user to supply these or fetch current consensus values if web access is available (state the source and date).
 
-## Round-based leagues: keeper surplus
+### Measure surplus in points or dollars, never in rounds
 
-**Surplus = keeper cost round − ADP round** (positive = profit).
+A round is not a constant unit of value. The gap between consecutive picks is steep in rounds 1–3 and nearly flat after round 8, so a flat round-based threshold simultaneously rejects elite keepers and accepts worthless ones. Keeping the overall #1 player at pick 1.12 is +1 round of "surplus" and is the largest edge available in any keeper league; keeping a round-10 ADP player at a round-12 cost is +2 rounds and worth almost nothing.
 
-- Convert ADP to a round for the user's league size (12-team: overall 25–36 = round 3).
-- **Keep threshold: surplus ≥ 2 rounds** for a locked call. Surplus of 1 round is a coin flip — break ties with the adjustments below. Surplus ≤ 0 means redraft the player instead; keeping at market price wastes the keeper slot's option value.
-- Adjustments (worth ±1 round of surplus):
-  - *Tier scarcity*: +1 if the player sits in a top-2 tier at a scarce position for this league's settings — replacement cost exceeds ADP.
-  - *Escalation*: −1 if cost escalates and this is the last cheap year of a multi-year hold worth planning around.
-  - *Age/situation risk*: −1 for a player whose ADP is propped up by last season's outlier or an unresolved depth-chart battle.
-- Opportunity cost check: keeping consumes that round's pick. Surplus already accounts for this **only if** the league charges the stated round; in leagues where keepers cost the *first* pick regardless, compare the player's value directly against a typical round-1 ADP instead.
+**Surplus = the player's value over replacement − the value over replacement of the player typically available at the cost pick.** Reuse the board from `draft-strategy:draft-prep`, which already computes exactly this unit.
 
-## Auction leagues
+**Keep threshold ≈ one tier gap at that position**, roughly 15–25 points in a 12-team half-PPR. Below that, the keeper slot is better spent on optionality.
 
-Surplus = market auction value − keeper price, in dollars. Keep threshold: surplus ≥ 10% of the total budget (e.g., $20 on a $200 budget). Same adjustments apply, scaled to dollars.
+### Adjust for pool dilution
 
-## Step 3: Rank and recommend
+Keepers remove players from the draft pool, but they also consume the picks used to keep them. Those two effects mostly cancel, so the naive assumption that "N keepers shift everyone N picks earlier" badly overstates the effect — a keeper kept at his own market price is value-neutral.
 
-Output a table of candidates sorted by adjusted surplus, mark keep/pass at the league's keeper count, and note the draft-board consequence of each keep ("keeping him burns your 6th — plan for zero-RB through round 5"). Suggest running draft-prep next so the board reflects the keeper-adjusted player pool.
+The dilution at any pick P is the number of keepers whose market value is ahead of P but whose **cost pick is behind P** — the bargains. In a 12-team keep-2 league with typical surpluses that runs to roughly **5 picks, about half a round**, peaking in the middle rounds. Apply it where the value curve is steep and ignore it below round 8, where it changes nothing.
 
-## Worked example (fictional players, "Basement Brawlers" 12-team half-PPR, keep 2, cost = round drafted last year − 1)
+Because dilution is small, break-even sits near zero surplus, not comfortably above it. The genuine reason to require a *positive* threshold is **option value**: declaring keepers before camp locks the decision in ahead of injury news and ADP movement. Say that as the reason, rather than inflating the threshold.
 
-| Candidate | Cost | ADP (round) | Raw surplus | Adjustments | Adjusted |
-|-----------|------|-------------|-------------|-------------|----------|
-| WR Cassius Bell | R11 | 4.08 (R4) | +7 | — | **+7 → KEEP** |
-| RB Quincy Marsh | R3 | 2.03 (R2) | +1 | +1 tier scarcity (Tier 2 RB, thin league) | **+2 → KEEP** |
-| QB Tug Ridley | R8 | 7.11 (R7) | +1 | −1 (1-QB league, QB replacement is free) | 0 → pass |
-| TE Oren Vasquez | R5 | 6.02 (R6) | −1 | — | −1 → pass, redraftable |
+## Step 3: Auction leagues
 
-Recommendation: keep Bell and Marsh. Bell is the league-winning class of keeper (7 rounds of surplus); Marsh edges Ridley because RB scarcity survives the adjustment and QB never does in a 1-QB league.
+Surplus = market value − keeper price, in dollars — but two corrections come first.
+
+**Compute inflation.** Keeping players below market leaves more money chasing less value:
+
+`inflation = (total league budget − total keeper prices) / (market value of the remaining player pool)`
+
+If a 12-team $200 league keeps $600 of value at $300 of price, then $2,100 chases $1,800 of value — 17% inflation on every subsequent bid. A user who doesn't know this underbids the entire auction. Multiply remaining players' market values by the inflation factor before comparing anything.
+
+**Use a ratio, not an absolute threshold.** A $20 surplus on a $5 keeper is a 5× return and an obvious keep; the same $20 surplus on a $60 keeper is positive but commits nearly a third of the budget and constrains the whole roster. Keep when `market value / keeper price ≥ 1.5` for players priced above ~5% of budget, and keep essentially any positive-surplus player priced below 5%.
+
+## Step 4: Tiebreakers
+
+Apply these only to separate candidates of similar surplus — never as adjustments to the surplus itself, which would double-count what market value already prices in:
+
+- **Escalation**: prefer the keeper with the longer cheap runway. Escalation affects *next* year's price, not this year's value, so it breaks ties rather than reducing surplus.
+- **Age, in multi-year keeper formats**: RB production tends to fall off around 27, WR around 30, TE later, QB holding into the mid-30s. Irrelevant in single-season keeper leagues.
+- **Role certainty**: prefer the player whose projection sources agree. Wide disagreement means an unresolved role.
+
+Do **not** apply a positional adjustment. Market value already embeds positional scarcity — that is why QB1s go in round 5 rather than round 1 in a 1-QB league. Subtracting again for "QB replacement is free" penalizes the same fact twice. In **superflex**, the opposite holds and no adjustment is needed either: recomputed QB baselines make quarterbacks the most valuable keeper class outright, and the points-based surplus shows it automatically.
+
+## Step 5: Rank and recommend
+
+Output candidates sorted by surplus, mark keep/pass at the league's keeper count, and note the draft-board consequence of each keep ("keeping him burns your 6th — plan for zero-RB through round 5"). Suggest running `draft-strategy:draft-prep` next so the board reflects the keeper-adjusted pool.
+
+## Worked example (fictional)
+
+"Basement Brawlers," 12-team half-PPR, keep 2, cost = round drafted last year − 1. Values from the draft-prep board; replacement baselines RB 155, WR 150, QB 250, TE 110.
+
+| Candidate | Cost | Value at cost pick | Player value | Surplus | Verdict |
+|-----------|------|--------------------|--------------|---------|---------|
+| WR Cassius Bell | R11 | +12 | +88 | **+76** | **KEEP** — largest edge available |
+| RB Quincy Marsh | R3 | +61 | +83 | **+22** | **KEEP** — clears the ~20-point tier gap |
+| TE Oren Vasquez | R5 | +30 | +41 | **+11** | Pass, narrowly — real but under a tier gap |
+| QB Tug Ridley | R8 | +18 | +26 | **+8** | Pass |
+
+Recommendation: keep Bell and Marsh. Note what changed by pricing in points rather than rounds — Ridley is not penalized for being a quarterback (his market price already reflects that), and Vasquez is a *narrow* pass at +11 rather than a confident one, so if either Bell or Marsh becomes ineligible, Vasquez is the next man up rather than an afterthought.
