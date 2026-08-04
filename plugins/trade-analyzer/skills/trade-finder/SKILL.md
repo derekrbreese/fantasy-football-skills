@@ -67,7 +67,7 @@ Suggest `trade-analyzer:trade-evaluation` to pressure-test the construction, `tr
 
 ## Worked example (fictional)
 
-"Basement Brawlers," 12-team, week 8. User (5-3): RB surplus (4 startable for 2+flex), TE deficit (streaming). Scan finds:
+"Basement Brawlers," 12-team, week 8. **As of Thursday 7:00 PM ET**, rosters, standings, and usage inputs are current, and no proposed angle depends on unresolved injury news. User (5-3): RB surplus (4 startable for 2+flex), TE deficit (streaming). Scan finds:
 
 | Team | Record | Surplus | Deficit | Fit |
 |---|---|---|---|---|

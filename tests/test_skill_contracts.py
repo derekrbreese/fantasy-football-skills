@@ -147,6 +147,47 @@ class SkillContractTests(unittest.TestCase):
             text(ROOT / "plugins/roster-ops/skills/set-lineup/SKILL.md"),
         )
 
+    def test_worked_examples_follow_the_repaired_decision_contracts(self) -> None:
+        start_sit = text(ROOT / "plugins/lineup-strategy/skills/start-sit/SKILL.md")
+        set_lineup = text(ROOT / "plugins/roster-ops/skills/set-lineup/SKILL.md")
+        keeper = text(
+            ROOT / "plugins/draft-strategy/skills/keeper-evaluation/SKILL.md"
+        )
+        waiver_scan = text(
+            ROOT / "plugins/waiver-wire/skills/waiver-scan/SKILL.md"
+        )
+        faab = text(ROOT / "plugins/waiver-wire/skills/faab-bidding/SKILL.md")
+        trade = text(
+            ROOT / "plugins/trade-analyzer/skills/trade-evaluation/SKILL.md"
+        )
+        draft_prep = text(
+            ROOT / "plugins/draft-strategy/skills/draft-prep/SKILL.md"
+        )
+
+        self.assertIn("the decision deadline is 12:55 PM", start_sit)
+        self.assertIn("Do not pretend Marsette remains a fallback", start_sit)
+        self.assertIn("run `lineup-strategy:start-sit`", set_lineup)
+        self.assertIn("never greedily fill one row at a time", set_lineup)
+        self.assertIn("official status plus a second credible source", set_lineup)
+        self.assertIn("captures 11 picks — just under one round", keeper)
+        for exact_pick in (
+            "11.10 (overall 130)",
+            "3.10 (overall 34)",
+            "5.10 (overall 58)",
+            "8.03 (overall 87)",
+        ):
+            self.assertIn(exact_pick, keeper)
+        self.assertIn("official IR transaction", waiver_scan)
+        self.assertIn("independent beat-practice report", waiver_scan)
+        self.assertIn("official transaction log", faab)
+        self.assertIn("independent beat report", faab)
+        self.assertIn("As of Thursday 7:00 PM ET", trade)
+        self.assertIn(
+            "`teams × (dedicated QB slots + QB-assigned superflex slots)`",
+            draft_prep,
+        )
+        self.assertIn("not a universal constant", draft_prep)
+
     def test_fixtures_cover_the_three_edge_case_families(self) -> None:
         self.assertEqual(3, len(FIXTURE_FILES))
         combined = "\n".join(text(path).casefold() for path in FIXTURE_FILES)
@@ -168,6 +209,50 @@ class SkillContractTests(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(1, body.count("(default)"))
                 self.assertNotIn("derekrbreese", body.casefold())
+
+    def test_fixture_edges_map_to_explicit_consumer_rules(self) -> None:
+        return_fixture = text(
+            ROOT / "tests/fixtures/return-idp-reverse.md"
+        ).casefold()
+        wide_fixture = text(
+            ROOT / "tests/fixtures/three-wr-faab-vote.md"
+        ).casefold()
+        keeper_fixture = text(
+            ROOT / "tests/fixtures/keeper-teflex-pressure.md"
+        ).casefold()
+        draft = text(
+            ROOT / "plugins/draft-strategy/skills/draft-prep/SKILL.md"
+        ).casefold()
+        faab = text(
+            ROOT / "plugins/waiver-wire/skills/faab-bidding/SKILL.md"
+        ).casefold()
+        trade = text(
+            ROOT / "plugins/trade-analyzer/skills/trade-evaluation/SKILL.md"
+        ).casefold()
+        keeper = text(
+            ROOT / "plugins/draft-strategy/skills/keeper-evaluation/SKILL.md"
+        ).casefold()
+        lineup = text(
+            ROOT / "plugins/lineup-strategy/skills/start-sit/SKILL.md"
+        ).casefold()
+
+        self.assertIn("weekly-reverse-standings", return_fixture)
+        self.assertIn("weekly reverse standings / recomputed priority", faab)
+        self.assertIn("return yards", return_fixture)
+        self.assertIn("return yards", draft)
+        self.assertIn("idp", return_fixture)
+        self.assertIn("idp", draft)
+
+        self.assertIn("3 wr", wide_fixture)
+        self.assertIn("teams × (dedicated starters + flex_slots × flex_share)", draft)
+        self.assertIn("league-vote", wide_fixture)
+        self.assertIn("veto votes", trade)
+
+        self.assertIn("rb/wr/te", keeper_fixture)
+        self.assertIn("respect each slot's eligibility", lineup)
+        self.assertIn("keepers: up to 2", keeper_fixture)
+        self.assertIn("exact pick", keeper)
+        self.assertIn("collision rule", keeper)
 
 
 if __name__ == "__main__":

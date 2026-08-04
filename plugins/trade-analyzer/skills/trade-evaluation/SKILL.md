@@ -75,7 +75,7 @@ If the league uses veto votes, note when a fair deal *looks* lopsided, since app
 
 ## Worked example (fictional)
 
-"Gridiron Gazette," week 10. User (7-3, contender, thin at RB) **receives an offer**: get RB Quincy Marsh + WR Deion Marsette, send WR Cassius Bell. Opponent is 4-6 (bubble), starts 3 WR, RB-surplus.
+"Gridiron Gazette," week 10. **As of Thursday 7:00 PM ET**, both rosters, standings, projection source, and platform trade rules have been refreshed; no unresolved injury designation materially changes the price. User (7-3, contender, thin at RB) **receives an offer**: get RB Quincy Marsh + WR Deion Marsette, send WR Cassius Bell. Opponent is 4-6 (bubble), starts 3 WR, RB-surplus.
 
 - **Origination**: they proposed it, so the bar is a clearly positive edge, not break-even.
 - **Raw value**: user ahead by roughly the high-teens on current projections — enough to favor the user on paper for a final offer, while still acknowledging source noise.

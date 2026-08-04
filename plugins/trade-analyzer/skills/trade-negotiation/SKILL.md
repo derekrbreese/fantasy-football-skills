@@ -46,7 +46,7 @@ The counter-message the user sends should lead with what the other side gains ("
 
 ## Worked example (fictional)
 
-"Turf Burns" countered the user's Fontaine-for-Vasquez offer: they want Fontaine **plus** WR Jalen Moss for Vasquez. User's walk-away (from trade-evaluation): giving Fontaine + any startable WR loses more lineup points than the elite TE adds — Moss is over the line, a bench piece is not.
+**As of Friday 6:00 PM ET**, the platform still shows the same players, deadline, and legal trade assets, with no unresolved injury change. "Turf Burns" countered the user's Fontaine-for-Vasquez offer: they want Fontaine **plus** WR Jalen Moss for Vasquez. User's walk-away (from a fresh trade-evaluation pass): giving Fontaine + any startable WR loses more lineup points than the elite TE adds — Moss is over the line, a bench piece is not.
 
 > They kept the structure — they want this trade; it's a price haggle. Counter (one concession, conditioned, smallest piece): "Can't do Moss — he starts for me. I can do **Fontaine + Dewey Sandoval for Vasquez** *if* you include your backup TE so I'm not streaming the position while Vasquez is on bye. Sandoval's been getting goal-line looks. Good until Sunday — after this week I'm just streaming TE and keeping the RBs."
 >

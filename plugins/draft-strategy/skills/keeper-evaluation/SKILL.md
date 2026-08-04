@@ -21,7 +21,7 @@ For each candidate: player, keeper cost (round or $), and current ADP or auction
 
 ### Measure surplus in points or dollars, never in rounds
 
-A round is not a constant unit of value. The gap between consecutive picks is steep in rounds 1–3 and nearly flat after round 8, so a flat round-based threshold simultaneously rejects elite keepers and accepts worthless ones. Keeping the overall #1 player at pick 1.12 is +1 round of "surplus" and is the largest edge available in any keeper league; keeping a round-10 ADP player at a round-12 cost is +2 rounds and worth almost nothing.
+A round is not a constant unit of value. The gap between consecutive picks is steep in rounds 1–3 and nearly flat after round 8, so a flat round-based threshold simultaneously rejects elite keepers and accepts worthless ones. Keeping the overall #1 player at pick 1.12 captures 11 picks — just under one round — of market value and is one of the largest edges available in any keeper league; keeping a round-10 ADP player at a round-12 cost spans more rounds but can be worth almost nothing.
 
 **Surplus = the player's value over replacement − the value over replacement of the player typically available at the exact cost pick.** Reuse the board from `draft-strategy:draft-prep`, which already computes exactly this unit. Price round costs by the actual overall selection they burn, not a generic "round 6" bucket: pick 6.01 and pick 6.12 are meaningfully different assets. If two keepers collide onto the same round, apply the league's written collision rule first (earliest slot, one-round escalation, forfeit next open pick, etc.) and then price the resolved pick.
 
@@ -63,13 +63,13 @@ Output candidates sorted by surplus, mark keep/pass at the league's keeper count
 
 ## Worked example (fictional)
 
-"Basement Brawlers," 12-team half-PPR, keep 2, cost = round drafted last year − 1. Values from the draft-prep board; replacement baselines RB 155, WR 150, QB 250, TE 110.
+"Basement Brawlers," 12-team half-PPR, keep 2, cost = round drafted last year − 1. The user drafts from slot 10, so the resolved snake cost picks are shown below; no candidates collide. If two keepers do collide, this league moves the later-declared keeper one round earlier before pricing it. Values come from the draft-prep board; replacement baselines RB 155, WR 150, QB 250, TE 110.
 
-| Candidate | Cost | Value at cost pick | Player value | Surplus | Verdict |
-|-----------|------|--------------------|--------------|---------|---------|
-| WR Cassius Bell | R11 | +12 | +88 | **+76** | **KEEP** — largest edge available |
-| RB Quincy Marsh | R3 | +61 | +83 | **+22** | **KEEP** — clears the ~20-point tier gap |
-| TE Oren Vasquez | R5 | +30 | +41 | **+11** | Pass, narrowly — real but under a tier gap |
-| QB Tug Ridley | R8 | +18 | +26 | **+8** | Pass |
+| Candidate | Resolved cost pick | Value at cost pick | Player value | Surplus | Verdict |
+|-----------|--------------------|--------------------|--------------|---------|---------|
+| WR Cassius Bell | 11.10 (overall 130) | +12 | +88 | **+76** | **KEEP** — largest edge available |
+| RB Quincy Marsh | 3.10 (overall 34) | +61 | +83 | **+22** | **KEEP** — clears the ~20-point tier gap |
+| TE Oren Vasquez | 5.10 (overall 58) | +30 | +41 | **+11** | Pass, narrowly — real but under a tier gap |
+| QB Tug Ridley | 8.03 (overall 87) | +18 | +26 | **+8** | Pass |
 
 Recommendation: keep Bell and Marsh. Note what changed by pricing in points rather than rounds — Ridley is not penalized for being a quarterback (his market price already reflects that), and Vasquez is a *narrow* pass at +11 rather than a confident one, so if either Bell or Marsh becomes ineligible, Vasquez is the next man up rather than an afterthought.

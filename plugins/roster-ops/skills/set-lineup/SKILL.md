@@ -10,8 +10,8 @@ Set a lineup on the user's platform through their own logged-in browser session.
 ## Execution boundary
 
 - Treat this as an execution skill, not a general advice skill. If the user already named the swaps, carry out those swaps.
-- If the user asks you to "set my lineup" without naming the swaps, you may read the live roster page and do the narrow, execution-scoped analysis needed to produce a concrete lineup for this week on this platform, then ask for approval and apply it.
-- If the user is still debating broader start/sit choices, ranges of outcomes, or waiver implications in the abstract, stop before opening the browser and hand off to `lineup-strategy:start-sit` if installed; otherwise do that analysis inline first, then return here only once the intended lineup is settled.
+- If the user asks you to "set my lineup" without naming the swaps, read the live roster and then run `lineup-strategy:start-sit` if it is installed. Its globally optimized, evidence-qualified recommendation becomes the proposed target lineup; it is not authorization to apply anything.
+- If `lineup-strategy:start-sit` is unavailable, either ask the user to name the intended swaps or reproduce its full decision contract inline before returning to execution: optimize the whole legal lineup rather than filling slots greedily, honor locks and kickoff times, preserve late-swap optionality, timestamp the analysis, and require official status plus a second credible source for any injury-driven change. A page-visible projection or status tag alone is not enough. If the user is still debating broader ranges of outcomes or waiver implications, finish that read-only analysis before proceeding.
 
 ## Ground rules (all roster-ops skills)
 
@@ -33,7 +33,7 @@ Set a lineup on the user's platform through their own logged-in browser session.
 1. Read `leagues.md` from the project root first — the fields that matter here are platform, scoring, starting slots, and playoff weeks. If the file is missing or those fields are blank, ask for them directly and suggest running the `fantasy-league-setup:league-config` skill to persist the answers. If `leagues.md` defines more than one league, use the one marked `(default)` unless the user names another.
 2. Navigate to the roster (Phase 2 steps 1–2) and **read the current lineup from the page** — the page is the ground truth, not memory of past conversations. Record that full visible lineup as the baseline before proposing or applying anything.
 3. If the user already named the exact moves, turn those instructions into a concrete target lineup and check only legality, locks, and page-visible injury/bye constraints.
-4. If the user asked you to set the lineup without naming the swaps, recommend the narrowest concrete lineup needed for this week's roster page: fill required slots by expected points for this league's scoring; check injury/questionable tags and bye weeks shown on the page; flex goes to the best remaining eligible player. Where two options are close, say it's close and why the edge goes where it does. Honor overrides — the user's call wins.
+4. If the user asked you to set the lineup without naming the swaps, run the `lineup-strategy:start-sit` method on the live baseline when available. Otherwise solve one global assignment across every eligible slot for this league's scoring — never greedily fill one row at a time — while treating locked players as fixed, keeping a late-starting interchangeable player in FLEX when close, and naming any conditional fallback before the earlier option locks. Timestamp the recommendation. For an injury-driven swap, a page tag is only the official-status input; obtain a second credible source before making the change decisive. Honor overrides — the user's call wins.
 5. Present the recommendation or requested plan as a before/after list of only the slots that change. If the baseline already matches the intended lineup, say so and stop with `verified-success`.
 
 ## Phase 2: Execute on Yahoo
@@ -66,6 +66,6 @@ Note: if the league has Yahoo's **"Start Active Players"** auto-swap enabled, Ya
 
 ## Example run (fictional)
 
-"Set my lineup for week 9" → leagues.md says Yahoo, "Gridiron Gazette". Roster page shows TE Oren Vasquez on **bye** in the TE slot and RB Silas Okafor on the bench.
+"Set my lineup for week 9" → leagues.md says Yahoo, "Gridiron Gazette". At Sunday 11:35 AM ET, the live roster shows TE Oren Vasquez on **bye** in the TE slot and RB Silas Okafor on the bench. A `lineup-strategy:start-sit` pass optimizes the full legal assignment before any swap is proposed; neither change below depends on unverified injury news.
 
 > Recommendation: TE Harlan Pruitt in for Vasquez (bye); Okafor over Trask at RB2 (lead role, +3.2 proj). Two swaps, nothing else moves. No Save control on this roster page, so each swap commits the moment I make it — confirming both up front. Set it? — *user: yes* — Both swaps applied, then verified by re-reading the page: Pruitt TE, Okafor RB2, Vasquez and Trask to bench. Lineup is legal — no empty slots, no byes starting.

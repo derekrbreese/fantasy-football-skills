@@ -83,7 +83,7 @@ In all priority formats, if the claim is driven by unverified injury chatter, do
 
 ## Worked example (fictional)
 
-"Couch Commissioners," $200 season budget, **$124 remaining**, week 8 with 6 weeks left. Target: RB Silas Okafor, elevated to a lead role behind a starter placed on IR.
+"Couch Commissioners," $200 season budget, **$124 remaining**, week 8 with 6 weeks left. **As of Tuesday 9:00 AM ET**, the fictional team's official transaction log places the starter on IR and an independent beat report confirms Okafor took the lead first-team work; the platform budget and bid history were refreshed at the same time. Target: RB Silas Okafor. If either role source were missing, the major bid below would remain provisional rather than executable advice.
 
 - **Class**: the starter is on IR, so the role is season-altering — this is the top of *season-long starter* and arguably league-winner. Comps confirm it: the league's last two lead-back rentals cleared at $41 and $37. Starter band on $124 remaining = $19–56 (25–45%, week 10 window approaching).
 - **Credible rivals**: four teams have an RB hole and more than $40 left. That's 4+ → top of the range or above.

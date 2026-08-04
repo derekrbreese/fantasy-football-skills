@@ -49,7 +49,7 @@ Note the advice/execution split: `start-sit` decides *who* to start and needs no
 
 **This marketplace ships no data feed, no API integration, and no scraper.** It is computer-use based: the skills work from data you paste, or — if you have browser automation set up — from pages Claude reads in your own logged-in browser. Your league's roster and free-agent pages, the standings, your transaction history, a rankings site you have open.
 
-That means two things worth being clear about. There is no server anywhere holding your league data, and nothing works while you're logged out. It also means the advice skills and the execution skills share one security model: reading a page is free and needs no confirmation, but the advice skills will never click anything that changes your roster — every state change goes through `roster-ops` and its confirmation gate.
+That means two things worth being clear about. There is no server anywhere holding your league data. Browser-assisted reads and `roster-ops` stop when you're logged out, while advice skills can still work from rankings, rosters, or settings you paste. The advice and execution skills share one security model: reading a page is free and needs no confirmation, but the advice skills will never click anything that changes your roster — every state change goes through `roster-ops` and its confirmation gate.
 
 ## roster-ops security model
 

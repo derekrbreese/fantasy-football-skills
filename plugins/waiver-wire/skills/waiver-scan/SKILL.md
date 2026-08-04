@@ -72,9 +72,9 @@ Output a priority-ordered list: player, the hole he fills, the signal justifying
 
 ## Worked example (fictional)
 
-"Mud Dogs," 12-team half-PPR. RBs are Tobias Renner plus two dart throws; WR room is strong; TE Oren Vasquez on bye week 9.
+"Mud Dogs," 12-team half-PPR. **As of Tuesday 9:00 AM ET in week 8**, the platform roster and free-agent pool are current. RBs are Tobias Renner plus two dart throws; WR room is strong; TE Oren Vasquez is on bye week 9.
 
-Pool includes WR Deion Marsette (consensus top add, 22% rostered) and RB Silas Okafor (elevated after the starter landed on IR, 8% rostered).
+Pool includes WR Deion Marsette (consensus top add, 22% rostered) and RB Silas Okafor (8% rostered). Okafor's promotion is verified by the fictional team's official IR transaction plus an independent beat-practice report that he took the lead first-team work; his 65% relief snap share is from the platform game log. Without both role sources, rank him provisionally rather than decisively first.
 
 > 1. **RB Silas Okafor** — fills hole #3 (no RB insurance) and likely hole #2. Signal: 65% snap share in relief plus goal-line work, both above threshold, and the starter is on IR so the role is durable. Priority: high — lead-back roles don't reach next week's wire.
 > 2. **RB Colby Trask** — the second-order add. He's the pass-catching complement in that same backfield, rostered in 2% of leagues, and will absorb third-down work Okafor doesn't. A fraction of Okafor's price for a real share of the vacated touches.
