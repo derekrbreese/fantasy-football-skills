@@ -5,7 +5,13 @@ description: This skill should be used when the user asks "who should I start", 
 
 # Start/Sit: The Weekly Call
 
-Answer the most common question in fantasy football — who to start — from a roster the user pastes, describes, or that is fetched. **This skill never requires a browser session.** If the user also wants the lineup actually set on their platform, hand off at the end.
+Answer the most common question in fantasy football — who to start — from a roster the user pastes or describes. **This skill never requires a browser session**, which matters because start/sit questions usually arrive as a quick text with two names in it. If browser automation happens to be available and the user is logged in, reading their roster page saves them the typing — but never make a browser session a precondition for an opinion.
+
+**Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
+
+**This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
+
+If the user also wants the lineup actually applied on their platform, hand off at the end.
 
 ## Step 1: Load league context
 

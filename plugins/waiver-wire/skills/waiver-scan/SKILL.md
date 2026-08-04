@@ -15,8 +15,12 @@ An acquisition cap changes everything downstream: where adds are limited, each c
 
 ## Step 2: Get the two inputs
 
-1. **The user's roster** — pasted, or fetched if a league-data integration is available. Include the current week and any injury designations.
-2. **The available player pool** — a pasted free-agent list (easiest: sort by rostered% or recent points and paste the top 30–50), or fetched if available. Without a pool list, describe the *profile* to target ("your hole is RB depth — target any back whose starter just landed on IR") and ask for the list to name names.
+1. **The user's roster** — read from their platform if browser automation is available, otherwise pasted. Include the current week and any injury designations.
+2. **The available player pool** — read the platform's free-agent list directly, or ask for a paste (easiest: sort by rostered% or recent points and paste the top 30–50). Without a pool, describe the *profile* to target ("your hole is RB depth — target any back whose starter just landed on IR") and ask for the list to name names.
+
+**Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
+
+**This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
 
 ## Step 3: Diagnose roster holes
 

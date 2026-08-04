@@ -9,7 +9,10 @@ Find the trades that *should* exist in this league: pairs of rosters where each 
 
 ## Step 1: Load context
 
-Read `leagues.md` from the project root first — the fields that matter here are scoring, starting slots, trade deadline, and playoff weeks. If the file is missing or those fields are blank, ask for them directly and suggest running the `fantasy-league-setup:league-config` skill to persist the answers. If `leagues.md` defines more than one league, use the one marked `(default)` unless the user names another. Gather every roster in the league plus standings — pasted, or fetched via an available league integration. A partial league scan is fine; say which teams weren't scanned.
+Read `leagues.md` from the project root first — the fields that matter here are scoring, starting slots, trade deadline, and playoff weeks. If the file is missing or those fields are blank, ask for them directly and suggest running the `fantasy-league-setup:league-config` skill to persist the answers. If `leagues.md` defines more than one league, use the one marked `(default)` unless the user names another. Gather every roster in the league plus standings. If browser automation is available and the user is logged in, read the league's rosters and standings pages directly — this skill needs every team, so reading beats pasting a dozen rosters by hand. A partial scan is fine; say which teams weren't scanned.
+**Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
+
+**This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
 
 ## Step 2: Build the surplus/deficit matrix
 

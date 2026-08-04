@@ -24,7 +24,10 @@ This is the step most trade advice skips, and it flips the verdict on marginal i
 
 ## Step 3: Raw value pass
 
-Assign each player a rest-of-season value from projections the user supplies, a fetched consensus source (name it), or reasoned judgment (label it as such). Sum both sides.
+Assign each player a rest-of-season value from projections the user supplies, a consensus source read from the browser (name it and the date), or reasoned judgment (label it as such). Sum both sides.
+**Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
+
+**This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
 
 Interpret the gap in three bands rather than one:
 

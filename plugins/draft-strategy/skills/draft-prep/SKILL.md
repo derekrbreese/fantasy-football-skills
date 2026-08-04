@@ -1,6 +1,6 @@
 ---
 name: draft-prep
-description: This skill should be used before draft day, when the user asks to "build my draft board", "help me prep for my draft", "make tiers from these rankings", "tier my rankings", "rank players for my league", "adjust rankings for my scoring", or asks about positional scarcity or value-based drafting strategy. Builds a tiered, league-adjusted draft board from rankings the user supplies or that are fetched on request. Not for use during a live draft (draft-strategy live-draft-assistant) or for keeper decisions (draft-strategy keeper-evaluation).
+description: This skill should be used before draft day, when the user asks to "build my draft board", "help me prep for my draft", "make tiers from these rankings", "tier my rankings", "rank players for my league", "adjust rankings for my scoring", or asks about positional scarcity or value-based drafting strategy. Builds a tiered, league-adjusted draft board from rankings the user supplies or that are read from their browser. Not for use during a live draft (draft-strategy live-draft-assistant) or for keeper decisions (draft-strategy keeper-evaluation).
 ---
 
 # Draft Prep: Tiered Board Construction
@@ -16,8 +16,12 @@ Read `leagues.md` from the project root first — the fields that matter here ar
 Ask the user which they prefer, in this order:
 
 1. **User-supplied rankings** (best) — a pasted CSV/list from any source they trust, ideally with projected points and ADP columns.
-2. **Fetched consensus data** — if web access is available, fetch current consensus rankings and ADP from a public aggregator and tell the user the source and date.
+2. **Read from the browser** — if browser automation is available, read current consensus rankings and ADP off a rankings site or the platform's own draft board, and tell the user the source and the date it was read.
 3. **No data available** — build the board structure and decision rules anyway and mark player slots as "fill from your rankings"; never invent projections and present them as real.
+
+**Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
+
+**This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
 
 Minimum viable columns: player, position, and either projected points or overall rank. ADP unlocks value analysis; bye weeks unlock conflict warnings.
 

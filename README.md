@@ -45,7 +45,11 @@ The first five plugins need nothing but Claude Code. **`roster-ops` additionally
 
 Note the advice/execution split: `start-sit` decides *who* to start and needs no browser; `set-lineup` *applies* that decision on your platform. Same for `waiver-scan` vs. `submit-waiver-claim`, and `trade-evaluation` vs. `propose-trade`.
 
-The first five plugins work with data you paste — rankings, rosters, free-agent lists, bid history — or that Claude fetches when you have a data source available. This marketplace ships no data feed and no API integration of its own.
+## Where the data comes from
+
+**This marketplace ships no data feed, no API integration, and no scraper.** It is computer-use based: the skills work from data you paste, or — if you have browser automation set up — from pages Claude reads in your own logged-in browser. Your league's roster and free-agent pages, the standings, your transaction history, a rankings site you have open.
+
+That means two things worth being clear about. There is no server anywhere holding your league data, and nothing works while you're logged out. It also means the advice skills and the execution skills share one security model: reading a page is free and needs no confirmation, but the advice skills will never click anything that changes your roster — every state change goes through `roster-ops` and its confirmation gate.
 
 ## roster-ops security model
 

@@ -13,7 +13,11 @@ Read `leagues.md` from the project root first — the fields that matter here ar
 
 ## Step 2: Gather candidates and price them
 
-For each candidate: player, keeper cost (round or $), and current ADP or auction market value. Ask the user to supply these or fetch current consensus values if web access is available (state the source and date).
+For each candidate: player, keeper cost (round or $), and current ADP or auction market value. Ask the user to supply these, or — if browser automation is available and they're logged in — read current values off their platform or a rankings site, stating the source and date.
+
+**Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
+
+**This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
 
 ### Measure surplus in points or dollars, never in rounds
 
