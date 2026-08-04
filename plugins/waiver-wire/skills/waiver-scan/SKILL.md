@@ -13,10 +13,12 @@ Read `leagues.md` from the project root first — the fields that matter here ar
 
 An acquisition cap changes everything downstream: where adds are limited, each claim must clear a much higher bar and churning streamers is off the table.
 
+Pin time-sensitive recommendations to an **as-of** timestamp. When a player's value depends on an injury, benching, suspension, or activation, cite both the official status input and a second credible source before treating the role change as settled. If the evidence is incomplete, keep the ranking provisional and say the default action is to wait rather than force a move.
+
 ## Step 2: Get the two inputs
 
 1. **The user's roster** — read from their platform if browser automation is available, otherwise pasted. Include the current week and any injury designations.
-2. **The available player pool** — read the platform's free-agent list directly, or ask for a paste (easiest: sort by rostered% or recent points and paste the top 30–50). Without a pool, describe the *profile* to target ("your hole is RB depth — target any back whose starter just landed on IR") and ask for the list to name names.
+2. **The available player pool** — read the platform's free-agent list directly, or ask for a paste. Do not rely on one sort alone. Pull a broader sample: the best available players at each relevant position, plus views sorted by rostered%, recent usage or targets/snaps, projected points, and recent adds/drops if the platform shows them. A good fallback is 8-12 names per relevant position from multiple sorts, not just the global top 30 by rostered% or recent scoring. Without a pool, describe the *profile* to target ("your hole is RB depth — target any back whose starter just landed on IR") and ask for the list to name names.
 
 **Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
 
@@ -34,6 +36,8 @@ In severity order:
 ## Step 4: Score each available player
 
 **Opportunity outranks talent for in-season adds.** In order: depth-chart promotion (starter injured, traded, or benched), snap/route share trending up over 2+ weeks, red-zone and target share, and efficiency **last** — chasing one big game is how waiver budgets are wasted.
+
+Before elevating an injury replacement to the top tier, verify the role change with an official status input plus a second credible source. If that is still pending, explicitly label the player a provisional target and avoid presenting him as a must-add over stable alternatives.
 
 Concrete thresholds, since "trending up" is not actionable on its own:
 
@@ -60,9 +64,11 @@ Rank streamers by matchup, using inputs that actually predict:
 
 **Stream as a plan, not a reaction.** Look 3–4 weeks ahead and claim the defense with the best upcoming stretch *before* the market prices it, rather than paying up every week. Pair this with never rostering two defenses except for a pre-staged swap.
 
+Tie the stream plan to the league's waiver mechanics: in FAAB or rolling-priority leagues, reserve claims for players whose edge survives the lock; in FCFS or hybrid leagues, many one-week streamers are better treated as post-waiver pickups than as primary claims.
+
 ## Step 6: Deliver ranked claims
 
-Output a priority-ordered list: player, the hole he fills, the signal justifying him, and a priority note. Then hand off — for bid amounts run `waiver-wire:faab-bidding`, for who to cut run `waiver-wire:drop-candidates`, and to file the claim in the browser run `roster-ops:submit-waiver-claim`. If a plugin isn't installed, do the work inline instead and tell the user where the clicks are.
+Output a priority-ordered list: player, the hole he fills, the signal justifying him, and a priority note. Then hand off — for bid amounts run `waiver-wire:faab-bidding`, for who to cut run `waiver-wire:drop-candidates`, and to file the claim in the browser run `roster-ops:submit-waiver-claim`. If an analysis plugin is missing, do that analysis inline. If the execution plugin is missing, provide the clicks but preserve the transaction summary and explicit confirmation boundary; this read-only skill never files the move itself.
 
 ## Worked example (fictional)
 

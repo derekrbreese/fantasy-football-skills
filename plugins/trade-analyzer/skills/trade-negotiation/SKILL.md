@@ -11,6 +11,8 @@ Turn a stalled or countered trade into a closed deal — or a clean walk-away. T
 
 Gather: the offer history so far (every version, in order), the current offer on the table, what the other manager has *said* (their words carry their priorities), and both teams' standings. Read `leagues.md` from the project root for the trade deadline, playoff weeks, and trade-review method — the deadline is the clock every negotiation runs on. If the file is missing or those fields are blank, ask for them directly and suggest running the `fantasy-league-setup:league-config` skill to persist the answers. If `leagues.md` defines more than one league, use the one marked `(default)` unless the user names another.
 
+State the advice **as of** a concrete date/time, and refresh any stale injuries, role changes, or deadline context before treating the current counter as live. If an injury update is what moved the price, require **both** the official team/game status and a second credible source before repricing around it.
+
 ## Step 2: Set the walk-away before countering
 
 Before drafting any counter, compute (with trade-evaluation logic) the **minimum acceptable version**: the weakest construction the user should still accept, by lineup delta. Write it down in the response. Every counter is then measured against it — this is what prevents "winning the negotiation, losing the trade."
@@ -19,13 +21,15 @@ Before drafting any counter, compute (with trade-evaluation logic) the **minimum
 
 - **What they changed reveals what they value.** If they swapped out one player but kept the structure, they're in — haggling over price. If they restructured entirely, the original framing missed their need; re-diagnose (their deficit may not be what trade-finder assumed).
 - **Anchor check**: if their counter is far below the user's opener, don't split the difference — that rewards extreme anchoring. Move a small step and re-justify, or hold and re-frame.
+- **Every changed construction requires a fresh evaluation.** Re-run the trade-evaluation logic every time the pieces, pick/FAAB sweeteners, or roster counts change. A counter that adds a bench throw-in can still flip the deal once forced cuts, waiver replacements, legality, or timing are accounted for.
 - Classify momentum: converging (versions getting closer → close it), circling (same gap restated → change the *pieces*, not the price), or diverging (walk-away is near).
 
 ## Step 4: Concession laddering
 
-- **Concede smallest pieces first**: bench depth, a throw-in, claim priority — never the headline player in the first concession.
+- **Concede smallest legal pieces first**: bench depth, a throw-in, or FAAB/claim priority only when the league and platform explicitly allow that asset to be traded — never the headline player in the first concession.
 - **One concession per round**, and always attach a condition: "I'll add Sandoval if we swap your Pruitt in for the backup TE." Free concessions teach the partner to keep waiting.
 - **Change the shape when price-stuck**: expand 1-for-1 into 2-for-2 (lets both sides win a lineup slot), or move the surplus piece — a different player of similar value may fit their roster better and cost the user less.
+- In any 2-for-1 or 3-for-2 revision, recalculate who gets cut, who replaces that cut from waivers, and whether the platform/legal rules allow every asset in the package.
 - **Deadline lever**: name a real expiry tied to a real event ("before Sunday's games — after that Fontaine's price changes"). Never bluff an expiry; leagues remember.
 - **Develop a second partner before negotiating hard.** Having a genuine alternative for the same roster hole is the strongest legitimate leverage in fantasy trading — it makes the walk-away credible because it *is* credible. Build it before you need it, and never fabricate one.
 

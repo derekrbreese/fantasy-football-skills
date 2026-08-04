@@ -14,6 +14,12 @@ Read `leagues.md` from the project root first — the fields that matter here ar
 
 **This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
 
+For any in-season scan, make the timing explicit:
+
+- State the shortlist **as of** a concrete date/time.
+- Refresh rosters, standings, injuries, and usage news if the inputs are stale or partial.
+- For any trade idea built around an injury discount or return timetable, require **both** the official team/game status and a second credible source before treating that injury angle as actionable.
+
 ## Step 2: Build the surplus/deficit matrix
 
 For each team, at each position, compare **startable-quality players rostered vs. starting slots required** (this league's slots — a 3rd good RB is surplus in a 2-RB league and par in a 2RB+flex league):
@@ -48,14 +54,16 @@ Score each rival as a partner:
 For the top partner, construct a specific offer:
 
 - Trade **from surplus into deficit on both sides** — the offer should improve both starting lineups (verify with the lineup-delta test: value that doesn't reach a lineup isn't real to either side).
-- **Gate the opener on their lineup improving, not on a value percentage.** An offer that visibly upgrades the other team's starting lineup is never insulting regardless of what a value chart says; an offer that doesn't improve their lineup is insulting at any ratio. That is the real constraint.
-- Given that gate, **open at a 20–25% raw-value edge.** Counters always come back toward the middle, so a 12% opener closes near even or dies — the same anchoring logic the negotiation skill applies defensively applies here on offense. Anything below the lineup-improvement bar is not an opener at any price.
+- **Gate the opener on their lineup improving, but treat that as necessary rather than sufficient.** The offer must visibly help their starters, remain defensible within the uncertainty of the value inputs, and respect league norms and the manager's stated preferences. A lineup upgrade does not make an extreme asset imbalance non-insulting, and a value-chart tie does not rescue an offer that leaves their lineup unchanged.
+- Given that gate, **the opener may start at a meaningfully favorable raw-value anchor** so long as it is still credibly defensible from their lineup's perspective. That anchor is not the same as the final executable price: expect the accepted version to land materially closer to even, and say so.
+- In multi-player constructions, include the **forced-cut and waiver-replacement cost** for whichever side has to clear a roster spot. A 2-for-1 that improves starters but forces them to cut their only bye-week RB is not actually clean.
+- Check asset legality before proposing it: FAAB/pick trading allowed or not, keeper rights if relevant, recently added players, IR designations, and any platform restrictions visible on the page.
 - Include the pitch: two sentences the user can send explaining why it helps *the other team*, referencing their situation ("you've got three startable RBs and a WR2 hole and the deadline's in two weeks").
 - Offer 1–2 backup constructions (a smaller version, and a version with a different sweetener) for the negotiation to come.
 
 ## Step 5: Hand off
 
-Suggest `trade-analyzer:trade-evaluation` to pressure-test the construction, `trade-analyzer:trade-negotiation` when the reply comes back, and `roster-ops:propose-trade` to send it. If a plugin isn't installed, do that work inline instead.
+Suggest `trade-analyzer:trade-evaluation` to pressure-test the construction, `trade-analyzer:trade-negotiation` when the reply comes back, and `roster-ops:propose-trade` to send it. If an analysis plugin is missing, do that analysis inline. If the execution plugin is missing, provide the clicks but do not blur this read-only skill into an ungated browser transaction.
 
 ## Worked example (fictional)
 
@@ -67,4 +75,4 @@ Suggest `trade-analyzer:trade-evaluation` to pressure-test the construction, `tr
 | Blitz Krieg | 6-2 | WR | RB | One-way (user has no WR hole) — skip |
 | Fumble Bees | 2-6 | QB | everything | Motivated but nothing user needs — skip |
 
-> **Opening offer to Turf Burns**: send RB Errol Fontaine (user's RB4, their instant RB2 upgrade), receive TE Oren Vasquez. **Lineup gate passes** — Fontaine steps straight into their waiver-tier RB2 slot, so this visibly improves their starters and is not an insulting opener regardless of the value split. Value edge ~22% to the user (elite TE in TE-premium scoring), which is the right opening anchor: expect them to counter for a sweetener and to close nearer 10%. Pitch: "You're one RB from a playoff push and I'm streaming TE — Fontaine starts for you Sunday." Fallbacks: add RB Dewey Sandoval if they balk; smaller version targets their backup TE instead.
+> **Opening offer to Turf Burns**: send RB Errol Fontaine (user's RB4, their instant RB2 upgrade), receive TE Oren Vasquez. **Lineup gate passes** — Fontaine steps straight into their waiver-tier RB2 slot, so this visibly improves their starters and is not an insulting opener regardless of the value split. The user starts from a clearly favorable anchor because that is what openers are for, while expecting any executable deal to settle materially closer to even after counters. Pitch: "You're one RB from a playoff push and I'm streaming TE — Fontaine starts for you Sunday." Fallbacks: add RB Dewey Sandoval if they balk; smaller version targets their backup TE instead.

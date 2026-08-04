@@ -10,7 +10,7 @@ Run the user's draft in real time: track every pick, keep a best-available view,
 ## Setup (first message of the draft)
 
 1. Read `leagues.md` from the project root first — the fields that matter here are teams, scoring, and starting slots; snake math depends on them. If the file is missing or those fields are blank, ask for them directly and suggest running the `fantasy-league-setup:league-config` skill to persist the answers. If `leagues.md` defines more than one league, use the one marked `(default)` unless the user names another.
-2. Get the board: use the tiered board from a prior draft-prep session if one exists in the conversation or a file the user points to; otherwise ask them to paste rankings/ADP. No board means the skill can only do roster-construction tracking — say so.
+2. Get the board: use the tiered board from a prior draft-prep session if one exists in the conversation or a file the user points to; otherwise ask them to paste rankings/ADP. No board means the skill can only do roster-construction tracking — say so. If the board is rank-only or missing ADP, say up front which outputs are unavailable (numeric VOR, reach alerts, exact value-fall alerts) instead of pretending precision you do not have.
 3. Get the user's draft slot and confirm format (snake vs. auction; linear third-round-reversal if applicable).
 
 ## Draft state tracking
@@ -19,21 +19,22 @@ Maintain throughout, and restate briefly every few picks:
 
 - **Picks made** — the user reports picks ("Vellum went 1.03", "I took Renner"). Cross players off the board; log which team took them when the user says.
 - **User's roster so far** — filled slots vs. required starters.
-- **Snake math** — in an N-team snake at slot `s`, the gap to the next turn alternates by round parity:
-  - After an **odd**-round pick (order runs 1→N): the next turn is `2 × (N − s) + 1` selections later.
-  - After an **even**-round pick (order runs N→1): the next turn is `2 × s − 1` selections later.
+- **Checkpointed draft state** — keep an append-only, read-only state summary after each confirmed pick: current round/pick, drafted players removed, user's roster, and any unknown picks still pending ingestion. If the draft feed is partial, mark missing selections as unknown and keep working from the last confirmed checkpoint rather than inventing backfill. The checkpoint should be durable enough that the user can paste it into a fresh thread and resume cleanly.
+- **Snake math** — distinguish `next-pick gap` (the difference in overall pick numbers, used for reach math) from `intervening picks` (how many other selections happen before the user is up again).
+  - In a standard N-team snake at slot `s`, after an **odd**-round pick (order runs 1→N), the next-pick gap is `2 × (N − s) + 1`.
+  - In a standard N-team snake at slot `s`, after an **even**-round pick (order runs N→1), the next-pick gap is `2 × s − 1`.
   - Pick labels flip too: slot `s` picks `s` in odd rounds and `N − s + 1` in even rounds.
-  - Third-round reversal, if the league uses it: round 3 runs reversed, so compute round 3 onward with the parity swapped.
-  - Always show "you pick again in X selections."
+  - Third-round reversal, if the league uses it: round 3 runs reversed too, so the round-2-to-round-3 gap is exactly `N` selections for every slot (`N − 1` intervening picks), and round 3 uses the same pick label as round 2. From round 4 onward, resume the normal alternation with the parity swapped relative to a standard snake.
+  - Always show both counts plainly, e.g. "you pick again in 12 picks; 11 selections happen before your turn."
 
 ## On-the-clock recommendation logic
 
 When the user asks "who should I pick," answer in this order:
 
-1. **Best available by value over replacement** — top 3 remaining, with tier labels.
-2. **Tier urgency override** — a tier is dying if it will not survive to the user's next turn. Compare players left in the tier against **expected picks at that position** in the gap, not against total picks: `expected_takes = gap × positional share of picks` (roughly 0.30–0.40 for WR or RB in the middle rounds). Take from the tier now if `players_left ≤ expected_takes + 1`. Comparing against total picks badly overestimates safety — 4 players left across an 11-pick gap is a coin flip, not a comfortable wait.
+1. **Best available by value over replacement when the board supports it** — top 3 remaining, with tier labels. If the board is rank-only, use best remaining tier/rank instead and say the recommendation is structural rather than projection-priced.
+2. **Tier urgency override** — a tier is dying if it will not survive to the user's next turn. Compare players left in the tier against **expected picks at that position among the other managers' selections**, not against total picks: `expected_takes = intervening_picks × positional share of picks` (roughly 0.30–0.40 for WR or RB in the middle rounds). Take from the tier now if `players_left ≤ expected_takes + 1`. The next-pick gap belongs in reach math; using it here counts the user's own upcoming selection as though another manager could take the player first. Comparing against all intervening picks without positional share is worse still — 4 players left before 10 other selections is a coin flip, not a comfortable wait.
 3. **Roster construction override** — never leave a required *skill* slot unfillable. Counting only QB/RB/WR/TE/FLEX, by round ⌈skill starters × 0.75⌉ the user should have no more than one empty skill-position group. Don't take a third TE while 0 WRs are rostered, no matter the value.
-   - **K and DST are excluded from this rule and come in the final two rounds, no exceptions.** They have essentially zero value over replacement and free replacements exist all season. A rule that counts them as required groups will push a kicker into round 7, which throws away a bench asset on the most replaceable position in fantasy. A QB2 in a 1-QB league is nearly as wasteful.
+   - In standard 1-K/1-DST formats, exclude K and DST from this rule and leave them for the final two rounds. They have essentially zero value over replacement and free replacements exist all season, so counting them as required groups will push a kicker into round 7 and waste a bench asset. If the league's actual scoring or lineup rules make K, DST, return specialists, or IDP slots scarce, treat them like any other position instead of forcing the standard prior. A QB2 in a typical 1-QB league is nearly as wasteful.
 4. **Bye stacking check** — warn (don't block) when a pick creates 3+ shared byes among likely starters.
 
 ## Reach and value alerts
@@ -46,7 +47,7 @@ When the user asks "who should I pick," answer in this order:
 
 12-team snake, user at slot 7, pick 3.07 ("Gridiron Gazette" league). Roster so far: RB Tobias Renner, WR Cassius Bell.
 
-> **Pick now: Errol Fontaine (RB, Tier 3, value +54).** He's the last Tier 3 RB, so the tier dies here by definition. Your next turn is 11 selections away (odd round, `2 × (12 − 7) + 1`, so you're back at 4.06). The WR call is closer than it looks: Deion Marsette (Tier 2, ADP 3.10) has four tier-mates left, but at roughly a 35% WR pick rate across an 11-pick gap, about 4 WRs come off — so `players_left (4) ≤ expected_takes (4) + 1` and that tier is genuinely at risk too. Fontaine still wins because his tier has one player left against four; just don't count on Marsette returning. Reach check: Fontaine's ADP 3.09 is one pick away, far inside your 11-pick gap — no reach. Bye note: Fontaine shares week 9 with Renner — acceptable, but avoid a third week-9 bye.
+> **Pick now: Errol Fontaine (RB, Tier 3, value +54).** He's the last Tier 3 RB, so the tier dies here by definition. Your next-pick gap is 11 (odd round, `2 × (12 − 7) + 1`, so you're back at 4.06), while 10 selections occur before your turn. Keep the two counts separate: the 11-pick gap is for the reach test, but only those 10 intervening selections matter for tier urgency. The WR call is closer than it looks: Deion Marsette (Tier 2, ADP 3.10) has four tier-mates left, but at roughly a 35% WR pick rate across those 10 intervening selections, about 3.5 — roughly 4 — WRs come off. So `players_left (4) ≤ expected_takes (3.5) + 1`, and that tier is genuinely at risk too. Fontaine still wins because his tier has one player left against four; just don't count on Marsette returning. Reach check: Fontaine's ADP 3.09 is one pick away, far inside your 11-pick gap — no reach. Bye note: Fontaine shares week 9 with Renner — acceptable, but avoid a third week-9 bye.
 
 ## Auction variant
 

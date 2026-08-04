@@ -1,6 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "fantasy-league-setup",
+  "version": "1.1.0",
   "description": "One-time league configuration interview. Writes a leagues.md file to your project that every other fantasy-football-skills skill reads for scoring, roster, waiver, and playoff context.",
   "author": {
     "name": "derekrbreese",

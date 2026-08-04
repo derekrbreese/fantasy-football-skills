@@ -23,29 +23,31 @@ Ask the user which they prefer, in this order:
 
 **This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
 
-Minimum viable columns: player, position, and either projected points or overall rank. ADP unlocks value analysis; bye weeks unlock conflict warnings.
+Minimum viable columns: player and position. **Projected points are required for numeric value-over-replacement outputs; overall rank alone is enough to build tiers and scarcity notes, but not to claim point baselines or VOR totals.** ADP unlocks reach/value analysis; bye weeks unlock conflict warnings.
 
 **Ask for two sources when possible, and blend them.** Sources routinely disagree by 15–25% on individual players, and the disagreement is itself signal: a player whose projections vary by more than a tier width has a genuinely uncertain role. Flag those explicitly — they are the players to avoid if the roster needs certainty, and to target if it needs upside.
 
-## Step 3: Compute replacement level
+## Step 3: Compute starter demand and replacement level
 
-Value-based drafting prices every player against what is freely obtainable at their position, not against zero.
+Value-based drafting prices every player against a defined positional baseline, not against zero. Do not use "last required starter" and "best freely available player" as if they were the same line.
+
+**Do this in two passes.** First compute the **starter-demand baseline**: where the league runs out of weekly starters at each position. This is the draft-board/VBD line. Then estimate the **true waiver-replacement baseline**: the best player likely to remain freely available after teams fill starters and benches, using the actual platform pool when available or the league's bench depth and observed positional roster rates. Report that second line as a streamability and bench-value check; it is usually lower than the starter-demand line at RB/WR and can be higher in practice at highly streamable positions. If the input is rank-only, stop at demand/tier/scarcity structure and say numeric baselines are unavailable.
 
 **Demand per position** = `teams × (dedicated starters + flex_slots × flex_share)`.
 
 The `flex_slots` term matters and is often dropped: a 2-FLEX league has twice the flex demand of a 1-FLEX league.
 
-**Derive the flex share — do not assume it.** Hardcoded splits are format-specific and wrong outside the format they came from. Instead: pool every flex-eligible player ranked beyond their dedicated-starter baseline, sort by projection, take the top `teams × flex_slots`, and count how many are RB vs. WR vs. TE. That count *is* the flex share, computed from the same projections already in hand. It adapts automatically to PPR, standard, TE premium, superflex, and league size. As a sanity check on the result: full PPR skews the flex toward WR, standard skews it toward RB, and TE premium pulls TEs into it that base scoring never would.
+**Derive the flex share — do not assume it.** Hardcoded splits are format-specific and wrong outside the format they came from. Instead: pool every flex-eligible player beyond their dedicated-starter baseline, sort by projection when available (or by rank if not), take the top `teams × flex_slots`, and count how many are RB vs. WR vs. TE. That count *is* the flex share, computed from the same board already in hand. It adapts automatically to PPR, standard, TE premium, superflex, and league size. As a sanity check on the result: full PPR skews the flex toward WR, standard skews it toward RB, and TE premium pulls TEs into it that base scoring never would.
 
-**Then adjust the baseline for streamability**, because "freely obtainable" differs sharply by position:
+**Then adjust the starter-demand baseline for streamability and league-specific replacement rules**, because "freely obtainable" differs sharply by position:
 
-- **RB/WR**: the computed demand line is right. Replacement really is the last startable player.
-- **QB in 1-QB leagues**: streaming the best weekly matchup aggregates to roughly QB8–QB10 season-equivalent output, so true replacement is *better* than the QB12 demand line. Use the streaming estimate. This is the mathematical reason not to draft a QB early in a 1-QB league.
-- **TE**: streaming works poorly, because TE production is role-driven rather than matchup-driven. True replacement is *worse* than the TE12 line — roughly TE16–18 — which means elite TEs are worth more than the naive line suggests.
-- **Superflex/2QB**: the superflex slot goes to a QB in essentially every lineup, so use a flex share of 1.0 for QB and a baseline near QB24. Do not describe this as a multiplier on QB value; let the recomputed baseline drive the board. What actually changes is that the *entire position* becomes draftable and the QB13–24 range becomes the real scarcity crisis of the draft — there are only about 32 startable NFL quarterbacks against 24 required weekly starts plus backups, so the position cannot be streamed. Plan on a QB in the first two rounds and a second by rounds 4–6.
-- **K/DST**: replacement is the best free option every single week, so value over replacement is approximately zero for every kicker and defense. This is the formal reason for the punt rule below.
+- **RB/WR**: use the computed demand line for draft scarcity, but estimate actual waiver replacement separately from bench depth and the likely post-draft pool. In deep leagues the freely available RB/WR can sit well below the last required starter.
+- **QB in typical 1-QB leagues**: streaming the best weekly matchup aggregates to roughly QB8–QB10 season-equivalent output, so true replacement is *better* than the QB12 demand line. Use the streaming estimate. This is the mathematical reason late-round QB is usually correct. If the league materially changes QB scoring or access — 6-point pass TDs, heavy bonus scoring, deep lineups, start-2 QB, or superflex — recompute from that format instead of forcing the 1-QB prior.
+- **TE**: streaming usually works poorly, because TE production is role-driven rather than matchup-driven. True replacement is often *worse* than the TE12 line — roughly TE16–18 in ordinary 1-TE formats — which means elite TEs are worth more than the naive line suggests. In 2-TE, TE premium, or unusually deep-bench formats, let the recomputed demand line set the premium rather than hardcoding a TE16–18 rule.
+- **Superflex/2QB**: the superflex slot goes to a QB in essentially every lineup, so use a flex share of 1.0 for QB and a baseline near QB24. Do not describe this as a multiplier on QB value; let the recomputed baseline drive the board. What actually changes is that the *entire position* becomes draftable and the QB13–24 range becomes the real scarcity crisis of the draft — there are only about 32 startable NFL quarterbacks against 24 required weekly starts plus backups, so the position cannot be streamed. In most 12-team superflex rooms that means at least one QB is an early-round priority and the second rarely lasts deep into the draft.
+- **K/DST and specialist positions**: in ordinary 1-K/1-DST formats with no return-yard or IDP distortion, replacement is the best free option every single week, so value over replacement is approximately zero. If the league pays heavily for return yards, starts multiple defenses, or turns IDP/specialists into scarce lineup slots, recompute those positions from the league settings instead of forcing them to zero.
 
-**Value = projected points − baseline points.** Rank by that, not raw points.
+**Draft VBD = projected points − starter-demand baseline points.** Use that consistently for the overall draft board rather than mixing baselines across positions. Also report **waiver VOR = projected points − likely waiver-replacement points** when the pool estimate is reliable; use it to explain streamability and bench value, not as an unlabeled substitute for draft VBD.
 
 ## Step 4: Build tiers
 
@@ -60,13 +62,13 @@ Tiers matter more than ranks — on the clock, the question is "is anyone left i
 
 - Compare tier depth to league-wide demand from Step 3. The position where trustworthy players run out soonest is the scarcity priority.
 - Flag the "cliff round": the round by which each position's last solid tier will be gone at current ADP.
-- **Punt K and DST to the final two rounds. No exceptions.** Their value over replacement is approximately zero and free replacements are available all season; every earlier pick spent on them throws away a bench asset. A QB2 in a 1-QB league is nearly as wasteful.
+- **In standard 1-K/1-DST formats, punt K and DST to the final two rounds.** Their value over replacement is approximately zero and free replacements are available all season, so every earlier pick spent on them throws away a bench asset. Only override this if the league settings themselves create real scarcity or outlier scoring for K, DST, return specialists, or IDP-style slots. A QB2 in a typical 1-QB league is nearly as wasteful.
 - Name the structure the board implies — zero-RB, hero-RB, robust-RB, late-round QB, superflex double-QB — and say which draft slots can actually execute it. Structures are slot-dependent: advice to pair two players from an early tier is unreachable from most slots.
 - Use weeks 15–17 (or the league's configured playoff weeks) strength of schedule as an **intra-tier tiebreaker only**. Full-season SOS at draft time is close to noise, since projections already embed it and preseason defensive rankings are unreliable. Where SOS is used at all, use positional splits, never team-level defensive rank.
 
 ## Step 6: Deliver the board
 
-Output a markdown table per position (tier, player, projection, value over replacement, ADP, bye) plus an overall top-100 blended by value, the scarcity summary, and 3–5 strategy bullets specific to their settings.
+Output a markdown table per position. Include `(tier, player, projection, value over replacement, ADP, bye)` when projections exist; if the input is rank-only, switch to `(tier, player, rank, ADP, bye)` and state plainly that the board is structural rather than projection-priced. Then add the scarcity summary and 3–5 strategy bullets specific to their settings.
 
 ## Worked example (fictional)
 

@@ -18,7 +18,7 @@ Then install the plugins you want:
 /plugin install roster-ops@fantasy-football-skills
 ```
 
-Each of these depends on `fantasy-league-setup`, which installs automatically. The first time you use any skill, say *"set up my league"* — it interviews you once and writes a `leagues.md` file to your project. Every other skill reads that file for your scoring, roster slots, waiver system, and playoff weeks, so you never repeat yourself. A commented template lives at [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md).
+Each plugin declares `fantasy-league-setup` as a dependency. Current Claude Code builds expose dependency management, including auto-removal of unused dependencies; if your install does not pull `fantasy-league-setup` in automatically, install it explicitly with `/plugin install fantasy-league-setup@fantasy-football-skills`. The first time you use any skill, say *"set up my league"* — it interviews you once and writes a `leagues.md` file to your project. Every other skill reads that file for your scoring, roster slots, waiver system, and playoff weeks, so you never repeat yourself. A commented template lives at [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md).
 
 ### Prerequisites
 

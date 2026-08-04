@@ -29,7 +29,7 @@ description: This skill should be used when the user asks "phrase one", "phrase 
 - **Keep rules and worked examples consistent.** When a skill's example contradicts its own stated rule, the model follows the example. If an example needs an exception, write the exception into the rule.
 - Write the body in imperative form ("Read leagues.md first", not "You should read...").
 - Skills that need league context must read `leagues.md` from the project root first, fall back to asking when it's missing or blank, point at `fantasy-league-setup:league-config` to persist the answers, and honor the `(default)` marker when multiple leagues are defined. Copy the wording from an existing skill verbatim — the contract should read identically everywhere.
-- Refer to sibling skills by their full `plugin:skill` name, since that's how Claude Code addresses them. Plugins install independently, so phrase handoffs conditionally: if the other plugin isn't installed, do the work inline instead of telling the user to run something they don't have.
+- Refer to sibling skills by their full `plugin:skill` name, since that's how Claude Code addresses them. Plugins install independently, so phrase handoffs conditionally. Missing **analysis** can be done inline. Missing **transaction execution** must never be inlined into a read-only skill: provide manual steps while preserving the transaction summary and explicit confirmation boundary.
 - Worked examples use **fictional players and fictional league names** only. No real league names, no personal endpoints, no references to any specific person's setup.
 - Browser-automation skills (roster-ops style) must: navigate by goals and landmarks rather than brittle selectors, never handle credentials (the user's session is the auth), and pause for explicit user confirmation before any submit/confirm click.
 
@@ -48,3 +48,14 @@ Both must pass. Then test the install path locally:
 ```
 
 Confirm your skill triggers on its phrases and does not trigger on a sibling skill's phrases.
+
+Then run the repository's zero-dependency regression checks:
+
+```
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
+The checks protect frontmatter, trigger uniqueness, the `leagues.md` contract,
+known league-format edge cases, and roster-operation safety language. See
+`tests/README.md` for the short fixture-based manual review that accompanies
+them; prose checks supplement rather than replace the Claude plugin validator.

@@ -1,6 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "waiver-wire",
+  "version": "1.1.0",
   "description": "In-season waiver wire decision support: free-agent scans ranked against your roster's actual holes, FAAB bid sizing calibrated to your budget and league history, and drop candidates with bye-week and playoff-schedule awareness.",
   "author": {
     "name": "derekrbreese",

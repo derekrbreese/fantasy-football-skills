@@ -11,7 +11,14 @@ Rank the roster from most-cuttable to untouchable. The default failure mode is c
 
 Read `leagues.md` from the project root first — the fields that matter here are roster size, starting slots, playoff weeks, IR slots, and any acquisition cap. If the file is missing or blank, ask and suggest running `fantasy-league-setup:league-config`. If more than one league is defined, use the one marked `(default)`.
 
-Ask for the current roster (with byes and injury notes) and *why* a spot is needed — a one-week streamer justifies a much shallower cut than a season-long add.
+Ask for the current roster (with byes and injury notes), the most relevant free-agent alternatives at the same positions, and *why* a spot is needed — a one-week streamer justifies a much shallower cut than a season-long add.
+
+If the proposed cut is driven by an injury, demotion, or role-loss report, pin the analysis to an **as-of** timestamp and cite the evidence. Before recommending a destructive cut on that basis, confirm both:
+
+- An **official status change**: transaction wire, inactive list, practice report, coach quote, or platform designation.
+- A **second credible source** confirming that the role or timeline actually changed.
+
+If that verification is missing or conflicting, mark the player **no-action for now** unless there is an immediate roster emergency and the user explicitly accepts the risk.
 
 ## Step 2: Price the roster spot
 
@@ -28,7 +35,7 @@ Cut order, most cuttable first:
 
 1. **Second K or DST** — never roster two outside the single week a swap is pre-staged.
 2. **Expired streamers** — last week's matchup play whose matchup has passed.
-3. **Redundant depth at a replenishing position.** Measure redundancy against *this league's* starting slots, and weight by whether the wire refills that position. **Cut from positions the wire replenishes (WR, TE, QB, DST) and protect positions it does not (RB).** A sixth WR in a 2-WR league is more expendable than a fourth RB even at equal talent, because the WR is replaceable and the RB is not.
+3. **Redundant depth at a replenishing position.** Measure redundancy against *this league's* starting slots, then check the **actual free-agent pool** before calling a position replaceable. If the wire currently offers multiple startable WRs and no playable RBs, the sixth WR is more expendable than the fourth RB; if the pool shows the opposite, flip the conclusion. Use real pool evidence, not generic WR/RB assumptions.
 4. **Stalled lottery tickets** — stashes whose path to a role hasn't moved in 3+ weeks (snap share flat or falling), and backups in true committee backfields where no single injury creates a workload.
 5. **Injured starters and own-handcuffs** — use an IR slot if the league has one and the player qualifies; cutting is a last resort.
 
@@ -43,6 +50,7 @@ What *is* cuttable is the committee backup, where an injury splits work three wa
 - **The claim-back test**: would a rival plausibly claim this player within two weeks? If yes, don't cut for a marginal add — releasing a useful player to the league costs more than the add gains.
 - **Bye-week trap**: a player on bye *this* week is temporarily worthless and may be a top-3 asset. Never cut a weekly starter for their bye; stream around it by cutting from classes 1–4 instead.
 - **Playoff-schedule veto**: from about week 10, weight the league's configured playoff weeks. A mediocre bench piece with elite playoff matchups outranks a slightly better player facing top defenses then. Conversely — and say this out loud, because it is counterintuitive — "good so far" players with brutal playoff schedules move *up* the cut list. If the league grants the top seeds a first-round bye and the user is likely to earn one, weight the *later* playoff weeks accordingly rather than the first.
+- **Source-verification veto**: if the cut depends on a rumored injury setback, surprise benching, or depth-chart shakeup that lacks official status plus a second credible source, do not recommend the cut yet. Give a provisional ranking and say what confirmation would unlock it.
 
 ## Step 5: Deliver
 

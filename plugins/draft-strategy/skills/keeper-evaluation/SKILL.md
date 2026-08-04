@@ -13,7 +13,7 @@ Read `leagues.md` from the project root first — the fields that matter here ar
 
 ## Step 2: Gather candidates and price them
 
-For each candidate: player, keeper cost (round or $), and current ADP or auction market value. Ask the user to supply these, or — if browser automation is available and they're logged in — read current values off their platform or a rankings site, stating the source and date.
+For each candidate: player, keeper cost (round or $), and current ADP or auction market value. For round-cost leagues, get the **exact pick the keep consumes**: draft slot, round, and the league's collision rule if multiple keepers map to the same round. If the league has eligibility restrictions (tenure limits, drafted-only, no first-rounders, tag deadlines, etc.), screen those out before doing surplus math. Ask the user to supply these, or — if browser automation is available and they're logged in — read current values off their platform or a rankings site, stating the source and date.
 
 **Reading data with computer use.** If browser automation is available (Claude in Chrome or equivalent) and the user is already logged into their platform, read the pages directly instead of making them paste — league rosters, the free-agent pool, standings, transaction history, and any rankings site they have open. The session rules from `roster-ops` apply unchanged: the user's session is the auth, never ask for or type credentials, use the UI rather than platform APIs, act at human pace, and stop and hand back on any login or captcha screen.
 
@@ -23,7 +23,7 @@ For each candidate: player, keeper cost (round or $), and current ADP or auction
 
 A round is not a constant unit of value. The gap between consecutive picks is steep in rounds 1–3 and nearly flat after round 8, so a flat round-based threshold simultaneously rejects elite keepers and accepts worthless ones. Keeping the overall #1 player at pick 1.12 is +1 round of "surplus" and is the largest edge available in any keeper league; keeping a round-10 ADP player at a round-12 cost is +2 rounds and worth almost nothing.
 
-**Surplus = the player's value over replacement − the value over replacement of the player typically available at the cost pick.** Reuse the board from `draft-strategy:draft-prep`, which already computes exactly this unit.
+**Surplus = the player's value over replacement − the value over replacement of the player typically available at the exact cost pick.** Reuse the board from `draft-strategy:draft-prep`, which already computes exactly this unit. Price round costs by the actual overall selection they burn, not a generic "round 6" bucket: pick 6.01 and pick 6.12 are meaningfully different assets. If two keepers collide onto the same round, apply the league's written collision rule first (earliest slot, one-round escalation, forfeit next open pick, etc.) and then price the resolved pick.
 
 **Keep threshold ≈ one tier gap at that position**, roughly 15–25 points in a 12-team half-PPR. Below that, the keeper slot is better spent on optionality.
 
@@ -31,7 +31,7 @@ A round is not a constant unit of value. The gap between consecutive picks is st
 
 Keepers remove players from the draft pool, but they also consume the picks used to keep them. Those two effects mostly cancel, so the naive assumption that "N keepers shift everyone N picks earlier" badly overstates the effect — a keeper kept at his own market price is value-neutral.
 
-The dilution at any pick P is the number of keepers whose market value is ahead of P but whose **cost pick is behind P** — the bargains. In a 12-team keep-2 league with typical surpluses that runs to roughly **5 picks, about half a round**, peaking in the middle rounds. Apply it where the value curve is steep and ignore it below round 8, where it changes nothing.
+The dilution at any pick P is the number of keepers whose market value is ahead of P but whose **cost pick is behind P** — the bargains. In a 12-team keep-2 league with typical surpluses that runs to roughly **5 to 6 picks, about half a round**, peaking in the middle rounds. Apply it where the value curve is steep and ignore it below round 8, where it changes nothing.
 
 Because dilution is small, break-even sits near zero surplus, not comfortably above it. The genuine reason to require a *positive* threshold is **option value**: declaring keepers before camp locks the decision in ahead of injury news and ADP movement. Say that as the reason, rather than inflating the threshold.
 
@@ -59,7 +59,7 @@ Do **not** apply a positional adjustment. Market value already embeds positional
 
 ## Step 5: Rank and recommend
 
-Output candidates sorted by surplus, mark keep/pass at the league's keeper count, and note the draft-board consequence of each keep ("keeping him burns your 6th — plan for zero-RB through round 5"). Suggest running `draft-strategy:draft-prep` next so the board reflects the keeper-adjusted pool.
+Output candidates sorted by surplus, mark keep/pass at the league's keeper count, and note the draft-board consequence of each keep ("keeping him burns your 6th — plan for zero-RB through round 5"). Explicitly flag any ineligible player or unresolved cost collision rather than silently pricing through it. Suggest running `draft-strategy:draft-prep` next so the board reflects the keeper-adjusted pool.
 
 ## Worked example (fictional)
 
