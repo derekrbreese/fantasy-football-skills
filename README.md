@@ -1,8 +1,22 @@
 # fantasy-football-skills
 
-A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) of fantasy football skills: draft strategy, weekly start/sit, waiver-wire management, trade analysis, and browser-driven roster operations. Install a plugin and Claude picks up the right skill from natural phrases like *"who should I start"*, *"work the wire"*, or *"is this trade fair"*.
+A fantasy football plugin marketplace for ChatGPT, Codex, and [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces): draft strategy, weekly start/sit, waiver-wire management, trade analysis, and browser-driven roster operations. Install a plugin and your assistant picks up the right skill from natural phrases like *"who should I start"*, *"work the wire"*, or *"is this trade fair"*.
 
-## Install
+## Install in Codex
+
+```
+codex plugin marketplace add derekrbreese/fantasy-football-skills
+codex plugin add fantasy-league-setup@fantasy-football-skills
+codex plugin add draft-strategy@fantasy-football-skills
+codex plugin add lineup-strategy@fantasy-football-skills
+codex plugin add waiver-wire@fantasy-football-skills
+codex plugin add trade-analyzer@fantasy-football-skills
+codex plugin add roster-ops@fantasy-football-skills
+```
+
+Install and enable ChatGPT's built-in Browser plugin when you want the skills to read or operate your live fantasy platform. Sign into the platform yourself in that browser; the skills never handle credentials.
+
+## Install in Claude Code
 
 ```
 claude plugin marketplace add derekrbreese/fantasy-football-skills
@@ -22,7 +36,7 @@ Each plugin declares `fantasy-league-setup` as a dependency. Current Claude Code
 
 ### Prerequisites
 
-The first five plugins need nothing but Claude Code. **`roster-ops` additionally requires browser automation** — [Claude in Chrome](https://www.anthropic.com/news/claude-in-chrome) or an equivalent — and the extension must be granted permission for your fantasy platform's site before it can do anything. Without browser tooling, `roster-ops` skills will tell you the clicks to make rather than making them.
+The analysis plugins can work from information you paste. Live reads and **`roster-ops` require browser automation** — ChatGPT's built-in Browser, [Claude in Chrome](https://www.anthropic.com/news/claude-in-chrome), or another supported authenticated browser. Sign into your fantasy platform yourself in that browser. Without browser tooling, analysis skills name the missing live-data gap and `roster-ops` explains the clicks without making them.
 
 ## Plugins and skills
 
@@ -47,7 +61,7 @@ Note the advice/execution split: `start-sit` decides *who* to start and needs no
 
 ## Where the data comes from
 
-**This marketplace ships no data feed, no API integration, and no scraper.** It is computer-use based: the skills work from data you paste, or — if you have browser automation set up — from pages Claude reads in your own logged-in browser. Your league's roster and free-agent pages, the standings, your transaction history, a rankings site you have open.
+**This marketplace ships no data feed, platform connector, API integration, or scraper.** It works from data you paste, host-provided connectors, or pages read through your own logged-in browser: league rosters and free-agent pools, standings, transaction history, and rankings sites you have open. For Yahoo, an authenticated browser is the preferred live source. The skills honor a browser you explicitly name; otherwise they prefer ChatGPT's built-in Browser when it has a signed-in Yahoo session, then another available authenticated browser. A Yahoo connector that returns `403` or `unauthorized` is not retried during the same task.
 
 That means two things worth being clear about. There is no server anywhere holding your league data. Browser-assisted reads and `roster-ops` stop when you're logged out, while advice skills can still work from rankings, rosters, or settings you paste. The advice and execution skills share one security model: reading a page is free and needs no confirmation, but the advice skills will never click anything that changes your roster — every state change goes through `roster-ops` and its confirmation gate.
 
@@ -55,8 +69,8 @@ That means two things worth being clear about. There is no server anywhere holdi
 
 The `roster-ops` skills drive a browser session **you are already logged into**. Plainly:
 
-- **Your session is the auth.** The skills never ask for, read, store, or type usernames, passwords, or 2FA codes. If a login page, 2FA prompt, or captcha appears, Claude stops and hands the browser back to you.
-- **Nothing is submitted without your explicit confirmation**, and the confirmation has to come *after* Claude shows you what the page actually says. Telling Claude "and submit it" up front authorizes building the transaction, never sending it.
+- **Your session is the auth.** The skills never ask for, read, store, or type usernames, passwords, or 2FA codes. If a login page, 2FA prompt, captcha, consent page, or unusual-activity screen appears, the assistant stops and hands the browser back to you.
+- **Nothing is submitted without your explicit confirmation**, and the confirmation has to come *after* the assistant shows you what the page actually says. Saying "and submit it" up front authorizes building the transaction, never sending it.
 - **The gate matches what can't be undone.** A deferred waiver claim is cancellable; an immediate free-agent add drops a player irreversibly; a trade offer is visible to another human the instant it sends. Each gets a correspondingly stronger confirmation.
 - **UI only, never the API.** The skills won't call platform endpoints, execute page JavaScript, or script around the interface.
 - **Never unattended.** These skills require a human present for every transaction. Don't run them on a schedule or in a loop — that breaks both the confirmation model and the terms under which platforms tolerate this kind of use.

@@ -22,7 +22,7 @@ File a specific waiver claim or free-agent add in the user's own logged-in brows
 - **Never retry a submit click.** If the result is unclear, re-read the page to determine whether the claim was filed. Never click Submit a second time — a duplicate claim can spend the budget twice.
 - **Every execution ends in one terminal state**: `verified-success` (the intended claim/add is visibly present), `verified-absent` (the intended claim/add is visibly not present and the roster/queue still reflect the pre-submit state), or `unknown` (the page does not let you prove either state). Never retry from `unknown`.
 - **If the page doesn't match the described landmark, stop.** Read it, describe what's visible, and ask the user to identify the control. Never click a control not positively identified by its visible text.
-- If no browser tooling is available in the session, say so and walk the user through the clicks instead.
+- **Browser routing.** Honor a browser the user explicitly names. Otherwise use ChatGPT's built-in Browser when it has a signed-in session for the platform, then another available authenticated browser. For Yahoo, do not call a connector or platform API as a substitute for the browser, and do not retry a connector that returned `403`, `unauthorized`, or an equivalent authorization failure during the same task. If no browser tooling is available, say so and walk the user through the clicks instead.
 
 ## Phase 1: Assemble the claim
 

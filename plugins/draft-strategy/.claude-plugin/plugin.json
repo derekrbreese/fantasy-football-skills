@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "draft-strategy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Fantasy football draft decision support: tiered draft boards built from your rankings, value-based drafting adjusted for your league's roster settings, live best-available guidance, and keeper cost math.",
   "author": {
     "name": "derekrbreese",

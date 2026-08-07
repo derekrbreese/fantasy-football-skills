@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "lineup-strategy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Weekly start/sit decision support: who to start, head-to-head player comparisons, flex decisions, and floor-vs-ceiling calls based on whether you are favored or an underdog. Advice only — pairs with roster-ops to execute the change.",
   "author": {
     "name": "derekrbreese",

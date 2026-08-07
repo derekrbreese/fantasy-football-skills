@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "fantasy-football-skills",
-  "description": "Fantasy football decision-support skills for Claude Code: draft strategy, weekly start/sit, waiver wire, trade analysis, and browser-driven roster operations.",
+  "description": "Fantasy football decision-support skills for ChatGPT, Codex, and Claude Code: draft strategy, weekly start/sit, waiver wire, trade analysis, and browser-driven roster operations.",
   "owner": {
     "name": "derekrbreese",
     "url": "https://github.com/derekrbreese"

@@ -41,7 +41,7 @@ class SkillContractTests(unittest.TestCase):
         for path in manifests:
             with self.subTest(path=path):
                 manifest = json.loads(text(path))
-                self.assertEqual("1.1.0", manifest.get("version"))
+                self.assertEqual("1.1.1", manifest.get("version"))
 
     def test_every_contextual_plugin_declares_setup_dependency(self) -> None:
         manifests = sorted(ROOT.glob("plugins/*/.claude-plugin/plugin.json"))
@@ -51,6 +51,36 @@ class SkillContractTests(unittest.TestCase):
             with self.subTest(path=path):
                 manifest = json.loads(text(path))
                 self.assertIn("fantasy-league-setup", manifest.get("dependencies", []))
+
+    def test_yahoo_live_data_prefers_authenticated_browser(self) -> None:
+        analysis_skills = (
+            ROOT / "plugins/draft-strategy/skills/draft-prep/SKILL.md",
+            ROOT / "plugins/draft-strategy/skills/keeper-evaluation/SKILL.md",
+            ROOT / "plugins/lineup-strategy/skills/start-sit/SKILL.md",
+            ROOT / "plugins/waiver-wire/skills/waiver-scan/SKILL.md",
+            ROOT / "plugins/trade-analyzer/skills/trade-evaluation/SKILL.md",
+            ROOT / "plugins/trade-analyzer/skills/trade-finder/SKILL.md",
+        )
+        for path in analysis_skills:
+            body = text(path)
+            with self.subTest(path=path):
+                self.assertIn("For Yahoo league data, prefer an authenticated browser", body)
+                self.assertIn("ChatGPT's built-in Browser", body)
+                self.assertIn("do not retry it during the same task", body)
+                self.assertIn("do not fabricate league-specific analysis", body)
+
+        roster_skills = sorted(ROOT.glob("plugins/roster-ops/skills/*/SKILL.md"))
+        self.assertEqual(3, len(roster_skills))
+        for path in roster_skills:
+            body = text(path)
+            with self.subTest(path=path):
+                self.assertIn("**Browser routing.**", body)
+                self.assertIn("ChatGPT's built-in Browser", body)
+                self.assertIn("do not retry a connector", body)
+
+        readme = text(ROOT / "README.md")
+        self.assertIn("For Yahoo, an authenticated browser is the preferred live source", readme)
+        self.assertIn("A Yahoo connector that returns `403`", readme)
 
     def test_exact_quoted_trigger_phrases_do_not_collide(self) -> None:
         owners: dict[str, set[str]] = defaultdict(set)

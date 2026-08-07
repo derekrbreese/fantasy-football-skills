@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "roster-ops",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Browser-automation playbooks for executing roster moves (set lineup, submit waiver claim, propose trade) in the user's own logged-in browser session. Yahoo-first with ESPN and Sleeper variants. Never handles credentials and always pauses for explicit user confirmation before any submit or confirm click.",
   "author": {
     "name": "derekrbreese",
