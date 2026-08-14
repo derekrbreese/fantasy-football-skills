@@ -90,6 +90,12 @@
 <!-- Your team's name, so skills can identify your roster in pasted data. -->
 - My team: <your team name>
 
+<!-- Optional. Which authenticated browser skills should use when you
+     do not name one: ChatGPT built-in | Codex Browser | Claude in Chrome
+     | <other named tool> | unknown.
+     unknown means "use any signed-in session the current assistant has." -->
+- Preferred browser: unknown
+
 <!-- Add more leagues by repeating the section:
 
 ## League: <second league name>

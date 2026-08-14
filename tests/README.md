@@ -23,3 +23,7 @@ in `CONTRIBUTING.md` and manually exercise each fixture with three questions:
    instead of a destructive cut, major bid, or decisive lineup change?
 3. Does every proposed browser mutation preserve the correct league identity
    and stop at the final confirmation gate?
+4. Does "set up my league" offer to read the settings page before interviewing,
+   and does a Preferred browser value change which session is used?
+5. Does "what should I do this week" produce one briefing and refuse to click
+   a lineup, claim, or trade?

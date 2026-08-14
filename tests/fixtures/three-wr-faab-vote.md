@@ -22,4 +22,5 @@
 - Trade deadline: week 12
 - Trade review: league-vote
 - My team: County Line
+- Preferred browser: unknown
 

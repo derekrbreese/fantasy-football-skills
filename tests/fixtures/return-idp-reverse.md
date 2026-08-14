@@ -22,4 +22,5 @@
 - Trade deadline: week 12
 - Trade review: commissioner
 - My team: Harbor Patrol
+- Preferred browser: unknown
 

@@ -10,13 +10,31 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_FILES = sorted(ROOT.glob("plugins/*/skills/*/SKILL.md"))
 FIXTURE_FILES = sorted((ROOT / "tests" / "fixtures").glob("*.md"))
+LIVE_SOURCE_CONTRACT = ROOT / "contracts" / "live-source-routing.md"
+BROWSER_ROUTING_CONTRACT = ROOT / "contracts" / "browser-routing.md"
+LIVE_SOURCE_CONSUMERS = (
+    ROOT / "plugins/draft-strategy/skills/draft-prep/SKILL.md",
+    ROOT / "plugins/draft-strategy/skills/live-draft-assistant/SKILL.md",
+    ROOT / "plugins/draft-strategy/skills/keeper-evaluation/SKILL.md",
+    ROOT / "plugins/fantasy-league-setup/skills/league-config/SKILL.md",
+    ROOT / "plugins/lineup-strategy/skills/start-sit/SKILL.md",
+    ROOT / "plugins/lineup-strategy/skills/weekly-briefing/SKILL.md",
+    ROOT / "plugins/waiver-wire/skills/waiver-scan/SKILL.md",
+    ROOT / "plugins/waiver-wire/skills/faab-bidding/SKILL.md",
+    ROOT / "plugins/waiver-wire/skills/drop-candidates/SKILL.md",
+    ROOT / "plugins/trade-analyzer/skills/trade-evaluation/SKILL.md",
+    ROOT / "plugins/trade-analyzer/skills/trade-finder/SKILL.md",
+    ROOT / "plugins/trade-analyzer/skills/trade-negotiation/SKILL.md",
+)
 
 
 def text(path: Path) -> str:
+    """Return the UTF-8 contents of *path*."""
     return path.read_text(encoding="utf-8")
 
 
 def frontmatter(path: Path) -> dict[str, str]:
+    """Parse simple ``key: value`` YAML frontmatter from a skill file."""
     parts = text(path).split("---", 2)
     if len(parts) != 3:
         raise AssertionError(f"Missing YAML frontmatter: {path}")
@@ -28,10 +46,26 @@ def frontmatter(path: Path) -> dict[str, str]:
     return values
 
 
+def extract_paragraph(body: str, start: str) -> str:
+    """Return the paragraph in *body* that begins with *start*."""
+    idx = body.find(start)
+    if idx < 0:
+        raise AssertionError(f"missing {start!r}")
+    rest = body[idx:]
+    end = rest.find("\n\n")
+    paragraph = rest if end < 0 else rest[:end]
+    return paragraph.strip()
+
+
+def extract_list_item(body: str, start: str) -> str:
+    """Return the markdown list item in *body* that begins with *start*."""
+    return extract_paragraph(body, start)
+
+
 class SkillContractTests(unittest.TestCase):
     def test_skill_names_are_unique(self) -> None:
         names = [frontmatter(path).get("name") for path in SKILL_FILES]
-        self.assertGreaterEqual(len(names), 14)
+        self.assertGreaterEqual(len(names), 15)
         self.assertNotIn(None, names)
         self.assertEqual(len(names), len(set(names)))
 
@@ -41,7 +75,7 @@ class SkillContractTests(unittest.TestCase):
         for path in manifests:
             with self.subTest(path=path):
                 manifest = json.loads(text(path))
-                self.assertEqual("1.1.1", manifest.get("version"))
+                self.assertEqual("1.2.0", manifest.get("version"))
 
     def test_every_contextual_plugin_declares_setup_dependency(self) -> None:
         manifests = sorted(ROOT.glob("plugins/*/.claude-plugin/plugin.json"))
@@ -52,35 +86,39 @@ class SkillContractTests(unittest.TestCase):
                 manifest = json.loads(text(path))
                 self.assertIn("fantasy-league-setup", manifest.get("dependencies", []))
 
-    def test_yahoo_live_data_prefers_authenticated_browser(self) -> None:
-        analysis_skills = (
-            ROOT / "plugins/draft-strategy/skills/draft-prep/SKILL.md",
-            ROOT / "plugins/draft-strategy/skills/keeper-evaluation/SKILL.md",
-            ROOT / "plugins/lineup-strategy/skills/start-sit/SKILL.md",
-            ROOT / "plugins/waiver-wire/skills/waiver-scan/SKILL.md",
-            ROOT / "plugins/trade-analyzer/skills/trade-evaluation/SKILL.md",
-            ROOT / "plugins/trade-analyzer/skills/trade-finder/SKILL.md",
-        )
-        for path in analysis_skills:
-            body = text(path)
+    def test_live_source_routing_matches_the_canonical_contract(self) -> None:
+        """Require every live-data skill to copy the generic routing contract."""
+        contract = text(LIVE_SOURCE_CONTRACT).strip()
+        self.assertTrue(contract.startswith("**Live platform source routing.**"))
+        self.assertIn("Preferred browser", contract)
+        self.assertNotIn("ChatGPT's built-in Browser", contract)
+        for path in LIVE_SOURCE_CONSUMERS:
             with self.subTest(path=path):
-                self.assertIn("For Yahoo league data, prefer an authenticated browser", body)
-                self.assertIn("ChatGPT's built-in Browser", body)
-                self.assertIn("do not retry it during the same task", body)
-                self.assertIn("do not fabricate league-specific analysis", body)
+                copied = extract_paragraph(
+                    text(path), "**Live platform source routing.**"
+                )
+                self.assertEqual(contract, copied)
 
         roster_skills = sorted(ROOT.glob("plugins/roster-ops/skills/*/SKILL.md"))
         self.assertEqual(3, len(roster_skills))
+        browser_contract = text(BROWSER_ROUTING_CONTRACT).strip()
+        self.assertNotIn("ChatGPT's built-in Browser", browser_contract)
         for path in roster_skills:
-            body = text(path)
             with self.subTest(path=path):
-                self.assertIn("**Browser routing.**", body)
-                self.assertIn("ChatGPT's built-in Browser", body)
-                self.assertIn("do not retry a connector", body)
+                copied = extract_list_item(text(path), "- **Browser routing.**")
+                self.assertEqual(browser_contract, copied)
 
         readme = text(ROOT / "README.md")
-        self.assertIn("For Yahoo, an authenticated browser is the preferred live source", readme)
-        self.assertIn("A Yahoo connector that returns `403`", readme)
+        self.assertIn("Preferred browser", readme)
+        self.assertIn("any authenticated browser", readme.casefold())
+        marketplace = text(ROOT / ".claude-plugin" / "marketplace.json")
+        self.assertNotIn("ChatGPT", marketplace)
+
+    def test_published_skills_do_not_hardcode_a_chatgpt_browser(self) -> None:
+        """Keep ChatGPT as a user preference, not a hardcoded default."""
+        for path in SKILL_FILES:
+            with self.subTest(path=path):
+                self.assertNotIn("ChatGPT's built-in Browser", text(path))
 
     def test_exact_quoted_trigger_phrases_do_not_collide(self) -> None:
         owners: dict[str, set[str]] = defaultdict(set)
@@ -116,6 +154,7 @@ class SkillContractTests(unittest.TestCase):
             "- Draft:",
             "weekly-reverse-standings",
             "- Acquisition limit:",
+            "- Preferred browser:",
         )
         for marker in required:
             with self.subTest(marker=marker):
@@ -283,6 +322,34 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("keepers: up to 2", keeper_fixture)
         self.assertIn("exact pick", keeper)
         self.assertIn("collision rule", keeper)
+
+    def test_league_config_reads_settings_before_interviewing(self) -> None:
+        """Require settings-page reads and a Preferred browser field."""
+        body = text(
+            ROOT / "plugins/fantasy-league-setup/skills/league-config/SKILL.md"
+        )
+        self.assertIn("settings page", body.casefold())
+        self.assertIn("Preferred browser", body)
+        self.assertIn("never silently overwrite", body.casefold())
+        idx_browser = body.casefold().find("settings page")
+        idx_interview = body.find("**Interview**")
+        self.assertGreater(idx_browser, 0)
+        self.assertGreater(idx_interview, idx_browser)
+
+    def test_weekly_briefing_is_a_read_only_conductor(self) -> None:
+        """Require the weekly conductor to hand off and never execute."""
+        path = ROOT / "plugins/lineup-strategy/skills/weekly-briefing/SKILL.md"
+        body = text(path)
+        meta = frontmatter(path)
+        self.assertEqual("weekly-briefing", meta["name"])
+        self.assertIn("what should I do this week", meta["description"])
+        self.assertIn("Read `leagues.md` from the project root", body)
+        self.assertIn("lineup-strategy:start-sit", body)
+        self.assertIn("waiver-wire:waiver-scan", body)
+        self.assertIn("waiver-wire:drop-candidates", body)
+        self.assertIn("roster-ops", body)
+        self.assertIn("never", body.casefold())
+        self.assertIn("confirmation", body.casefold())
 
 
 if __name__ == "__main__":

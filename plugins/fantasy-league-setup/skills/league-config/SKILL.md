@@ -7,12 +7,17 @@ description: This skill should be used when the user asks to "set up my league",
 
 Interview the user about their fantasy league(s) and persist the answers to `leagues.md` in the project root. Every other fantasy-football-skills skill reads this file first, so a complete interview here means the user is never re-asked for scoring or roster context.
 
+**Live platform source routing.** Honor a browser the user explicitly names. If `leagues.md` records a Preferred browser, use that when it has a signed-in session for the platform. Otherwise use any authenticated browser the current assistant already has. For Yahoo league data, prefer an authenticated browser over a connector. If a Yahoo connector returns `403`, `unauthorized`, or an equivalent authorization failure, do not retry it during the same task. For non-Yahoo platforms, use a purpose-built connector when it is available and returns complete current data; otherwise use the browser. Read league rosters, the free-agent pool, standings, transaction history, and any rankings site directly instead of making the user paste them. Timestamp live data and name the source. The session rules from `roster-ops` apply unchanged: the user's session is the auth; never ask for, read, store, or type credentials; use the visible UI rather than platform endpoints; and stop and hand back on any login, 2FA, captcha, consent, or unusual-activity screen. If no usable live source exists, state the access gap and do not fabricate league-specific analysis.
+
+This skill may write `leagues.md`. It must never click anything that changes a roster, files a claim, or sends an offer.
+
 ## Workflow
 
 1. **Check for an existing `leagues.md`** in the project root. If it exists, show the current config and ask whether to update a league, add a new one, or start over. Never silently overwrite.
-2. **Interview** the user, one short batch of questions at a time (not one giant wall). Collect the fields below for each league.
-3. **Write `leagues.md`** using the structure in `leagues-template.md` (in this skill's directory). One `## League:` section per league. Strip the template's explanatory comments from the written file — keep it clean.
-4. **Confirm** by echoing back a one-line summary per league (e.g., "Gridiron Gazette — 12-team half-PPR on Yahoo, $100 FAAB").
+2. **Read the settings page first** when a signed-in browser is available. Offer to open the league settings (and scoring/roster/waiver subpages) and extract every visible field below. Prefer the platform's exact wording for IDs, scoring magnitudes, and waiver rules. Ask only for what the page does not show.
+3. **Interview** the user for remaining gaps, one short batch of questions at a time (not one giant wall). Fall back to a full interview when no browser is available or the user prefers to type. Collect the fields below for each league.
+4. **Write `leagues.md`** using the structure in `leagues-template.md` (in this skill's directory). One `## League:` section per league. Strip the template's explanatory comments from the written file — keep it clean.
+5. **Confirm** by echoing back a one-line summary per league (e.g., "Gridiron Gazette — 12-team half-PPR on Yahoo, $100 FAAB").
 
 ## Fields to collect
 
@@ -42,6 +47,7 @@ Optional (ask, but accept "skip"):
 - **Keeper rules** — how many keepers, cost mechanism (round-based, auction dollar, escalating)
 - **Trade deadline** week
 - **The user's team name** — so skills can tell "my roster" apart in exports the user pastes
+- **Preferred browser** — optional. Which authenticated browser skills should use when the user does not name one this turn: `ChatGPT built-in`, `Codex Browser`, `Claude in Chrome`, or another named tool. Write `unknown` if they have no preference; routing then uses any signed-in session the current assistant already has. This is how a ChatGPT-app user keeps that browser as *their* default without hardcoding it for every other install.
 
 ## Rules
 
@@ -56,7 +62,7 @@ Optional (ask, but accept "skip"):
 
 User says: "Set up my league — it's a 10-team full PPR on Sleeper called Couch Commissioners, superflex, $200 FAAB."
 
-Interview fills the gaps (season, league ID, timezone, scoring details, draft timing, waiver semantics, roster slots, bench, playoff weeks, keepers), then write:
+A signed-in Sleeper tab is available, so read the league settings page first. Interview only the gaps the page does not show (which league is default, Preferred browser, team name if ambiguous), then write:
 
 ```markdown
 # Fantasy League Configuration
@@ -83,6 +89,7 @@ Interview fills the gaps (season, league ID, timezone, scoring details, draft ti
 - Keepers: none
 - Trade deadline: week 12
 - My team: The Replacements
+- Preferred browser: unknown
 ```
 
 Finish by telling the user the file is ready and that draft, waiver, and trade skills will now use it automatically.

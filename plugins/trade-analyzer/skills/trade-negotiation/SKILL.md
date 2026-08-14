@@ -13,6 +13,10 @@ Gather: the offer history so far (every version, in order), the current offer on
 
 State the advice **as of** a concrete date/time, and refresh any stale injuries, role changes, or deadline context before treating the current counter as live. If an injury update is what moved the price, require **both** the official team/game status and a second credible source before repricing around it.
 
+**Live platform source routing.** Honor a browser the user explicitly names. If `leagues.md` records a Preferred browser, use that when it has a signed-in session for the platform. Otherwise use any authenticated browser the current assistant already has. For Yahoo league data, prefer an authenticated browser over a connector. If a Yahoo connector returns `403`, `unauthorized`, or an equivalent authorization failure, do not retry it during the same task. For non-Yahoo platforms, use a purpose-built connector when it is available and returns complete current data; otherwise use the browser. Read league rosters, the free-agent pool, standings, transaction history, and any rankings site directly instead of making the user paste them. Timestamp live data and name the source. The session rules from `roster-ops` apply unchanged: the user's session is the auth; never ask for, read, store, or type credentials; use the visible UI rather than platform endpoints; and stop and hand back on any login, 2FA, captcha, consent, or unusual-activity screen. If no usable live source exists, state the access gap and do not fabricate league-specific analysis.
+
+**This skill is read-only.** Reading a page needs no confirmation, but never click anything that changes a roster, files a claim, or sends an offer from here — that is what the `roster-ops` skills and their confirmation gates exist for.
+
 ## Step 2: Set the walk-away before countering
 
 Before drafting any counter, compute (with trade-evaluation logic) the **minimum acceptable version**: the weakest construction the user should still accept, by lineup delta. Write it down in the response. Every counter is then measured against it — this is what prevents "winning the negotiation, losing the trade."

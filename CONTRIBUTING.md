@@ -32,6 +32,7 @@ description: This skill should be used when the user asks "phrase one", "phrase 
 - Refer to sibling skills by their full `plugin:skill` name, since that's how Claude Code addresses them. Plugins install independently, so phrase handoffs conditionally. Missing **analysis** can be done inline. Missing **transaction execution** must never be inlined into a read-only skill: provide manual steps while preserving the transaction summary and explicit confirmation boundary.
 - Worked examples use **fictional players and fictional league names** only. No real league names, no personal endpoints, no references to any specific person's setup.
 - Browser-automation skills (roster-ops style) must: navigate by goals and landmarks rather than brittle selectors, never handle credentials (the user's session is the auth), and pause for explicit user confirmation before any submit/confirm click.
+- **Shared routing contracts live in `contracts/`.** Copy `contracts/live-source-routing.md` verbatim into every analysis skill that may read a live league page. Copy `contracts/browser-routing.md` verbatim into every `roster-ops` skill. Do not hand-edit a copy — change the contract file, then sync every consumer. The regression tests fail if a copy drifts. Honor a user-named browser first, then a `Preferred browser` value from `leagues.md`, then any authenticated session the current assistant already has. Do not hardcode ChatGPT (or any other vendor) as the default.
 
 ## Before opening a PR
 
