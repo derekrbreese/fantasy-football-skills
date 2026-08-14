@@ -47,7 +47,7 @@ Optional (ask, but accept "skip"):
 - **Keeper rules** — how many keepers, cost mechanism (round-based, auction dollar, escalating)
 - **Trade deadline** week
 - **The user's team name** — so skills can tell "my roster" apart in exports the user pastes
-- **Preferred browser** — optional. Which authenticated browser skills should use when the user does not name one this turn: `ChatGPT built-in`, `Codex Browser`, `Claude in Chrome`, or another named tool. Write `unknown` if they have no preference; routing then uses any signed-in session the current assistant already has. This is how a ChatGPT-app user keeps that browser as *their* default without hardcoding it for every other install.
+- **Preferred browser** — optional. Which authenticated browser skills should use when the user does not name one this turn: `ChatGPT built-in`, `Claude in Chrome`, or another named tool. Write `unknown` if they have no preference; routing then uses any signed-in session the current assistant already has. ChatGPT and Codex are the same app — do not record them as two different browsers. This is how a ChatGPT-app user keeps that browser as *their* default without hardcoding it for every other install.
 
 ## Rules
 

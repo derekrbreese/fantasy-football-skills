@@ -91,8 +91,8 @@
 - My team: <your team name>
 
 <!-- Optional. Which authenticated browser skills should use when you
-     do not name one: ChatGPT built-in | Codex Browser | Claude in Chrome
-     | <other named tool> | unknown.
+     do not name one: ChatGPT built-in | Claude in Chrome
+     | <other named tool> | unknown. ChatGPT and Codex are the same app.
      unknown means "use any signed-in session the current assistant has." -->
 - Preferred browser: unknown
 

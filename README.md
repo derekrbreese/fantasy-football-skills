@@ -1,6 +1,6 @@
 # fantasy-football-skills
 
-Ask your AI assistant *"who should I start"*, *"work the wire"*, or *"is this trade fair"* — and get answers calibrated to **your league's actual scoring, roster slots, and waiver rules**, not generic rankings talk. This is a plugin marketplace for OpenAI's Codex and Anthropic's [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) covering the full season: draft prep, weekly start/sit, waiver management, trade analysis, and browser-driven roster operations. ChatGPT's built-in browser is a supported live-data option when you record it as your Preferred browser — it is not the default for every install.
+Ask your AI assistant *"who should I start"*, *"work the wire"*, or *"is this trade fair"* — and get answers calibrated to **your league's actual scoring, roster slots, and waiver rules**, not generic rankings talk. This is a plugin marketplace for ChatGPT (Codex is the same app) and Anthropic's [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) covering the full season: draft prep, weekly start/sit, waiver management, trade analysis, and browser-driven roster operations.
 
 Works with Yahoo, ESPN, and Sleeper leagues (Yahoo has the deepest playbooks). There is no server, no API key, and no data feed — advice runs on data you paste or pages read through your own logged-in browser, and nothing ever touches your credentials.
 
@@ -10,7 +10,9 @@ Works with Yahoo, ESPN, and Sleeper leagues (Yahoo has the deepest playbooks). T
 2. **Say "set up my league"** — a one-time interview records your scoring, slots, waiver system, and playoff weeks to a `leagues.md` file. Every skill reads it from then on, so you never repeat yourself.
 3. **Ask.** *"Build my draft board."* *"Who should I start?"* *"How much should I bid?"* The right skill triggers off natural phrasing — see the [table below](#plugins-and-skills).
 
-## Install in Codex
+## Install in ChatGPT
+
+The plugin CLI is `codex` — same app.
 
 ```
 codex plugin marketplace add derekrbreese/fantasy-football-skills
@@ -47,7 +49,7 @@ Every other plugin declares `fantasy-league-setup` as a dependency, so it should
 
 **Nothing, for advice.** Every analysis skill works from information you paste — rankings, rosters, league settings, a trade offer.
 
-**Live reads and `roster-ops` need browser automation**: Codex's built-in Browser, ChatGPT's built-in browser, [Claude in Chrome](https://www.anthropic.com/news/claude-in-chrome), or another authenticated browser your assistant supports. You sign into your fantasy platform yourself, once, in that browser — the skills use your session and never see your credentials. Without a browser, analysis skills tell you exactly what live data is missing, and `roster-ops` explains the clicks instead of making them.
+**Live reads and `roster-ops` need browser automation**: ChatGPT's built-in Browser, [Claude in Chrome](https://www.anthropic.com/news/claude-in-chrome), or another authenticated browser your assistant supports. You sign into your fantasy platform yourself, once, in that browser — the skills use your session and never see your credentials. Without a browser, analysis skills tell you exactly what live data is missing, and `roster-ops` explains the clicks instead of making them.
 
 ## Plugins and skills
 
