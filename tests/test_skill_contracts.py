@@ -70,12 +70,16 @@ class SkillContractTests(unittest.TestCase):
         self.assertEqual(len(names), len(set(names)))
 
     def test_every_plugin_has_the_release_version(self) -> None:
+        """Require marketplace and plugin manifests to share the release version."""
+        release = "1.2.0"
+        marketplace = json.loads(text(ROOT / ".claude-plugin" / "marketplace.json"))
+        self.assertEqual(release, marketplace.get("version"))
         manifests = sorted(ROOT.glob("plugins/*/.claude-plugin/plugin.json"))
         self.assertEqual(6, len(manifests))
         for path in manifests:
             with self.subTest(path=path):
                 manifest = json.loads(text(path))
-                self.assertEqual("1.2.0", manifest.get("version"))
+                self.assertEqual(release, manifest.get("version"))
 
     def test_every_contextual_plugin_declares_setup_dependency(self) -> None:
         manifests = sorted(ROOT.glob("plugins/*/.claude-plugin/plugin.json"))
