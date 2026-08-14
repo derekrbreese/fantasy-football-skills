@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.0 — 2026-08-14
+
+- Made live-data routing generic: honor a named browser, then a
+  `Preferred browser` value in `leagues.md`, then any authenticated
+  session the current assistant already has. ChatGPT's browser remains a
+  supported preference, not a hardcoded default.
+- Extracted the routing paragraphs into `contracts/` and added a sync
+  test so copies cannot drift.
+- Added the live-source contract to live-draft, FAAB, drop-candidates,
+  trade-negotiation, and league-config.
+- `league-config` now reads the platform settings page first and only
+  interviews for gaps.
+- Added `lineup-strategy:weekly-briefing` as a read-only weekly
+  conductor.
+- Documented the Claude Code setup-plugin install command and added CI
+  for the contract tests.
+
 ## 1.1.0 — 2026-08-04
 
 - Expanded the `leagues.md` contract for season identity, verification,

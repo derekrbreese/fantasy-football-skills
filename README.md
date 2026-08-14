@@ -1,6 +1,6 @@
 # fantasy-football-skills
 
-Ask your AI assistant *"who should I start"*, *"work the wire"*, or *"is this trade fair"* — and get answers calibrated to **your league's actual scoring, roster slots, and waiver rules**, not generic rankings talk. This is a plugin marketplace for OpenAI's Codex and Anthropic's [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) covering the full season: draft prep, weekly start/sit, waiver management, trade analysis, and browser-driven roster operations.
+Ask your AI assistant *"who should I start"*, *"work the wire"*, or *"is this trade fair"* — and get answers calibrated to **your league's actual scoring, roster slots, and waiver rules**, not generic rankings talk. This is a plugin marketplace for OpenAI's Codex and Anthropic's [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) covering the full season: draft prep, weekly start/sit, waiver management, trade analysis, and browser-driven roster operations. ChatGPT's built-in browser is a supported live-data option when you record it as your Preferred browser — it is not the default for every install.
 
 Works with Yahoo, ESPN, and Sleeper leagues (Yahoo has the deepest playbooks). There is no server, no API key, and no data feed — advice runs on data you paste or pages read through your own logged-in browser, and nothing ever touches your credentials.
 
@@ -33,6 +33,7 @@ claude plugin marketplace add derekrbreese/fantasy-football-skills
 Then install the plugins you want:
 
 ```
+/plugin install fantasy-league-setup@fantasy-football-skills
 /plugin install lineup-strategy@fantasy-football-skills
 /plugin install draft-strategy@fantasy-football-skills
 /plugin install waiver-wire@fantasy-football-skills
@@ -40,13 +41,13 @@ Then install the plugins you want:
 /plugin install roster-ops@fantasy-football-skills
 ```
 
-Every plugin declares `fantasy-league-setup` as a dependency, so it should come along automatically; if your build doesn't pull it in, add it explicitly with `/plugin install fantasy-league-setup@fantasy-football-skills`. (Curious what the league interview will ask? A commented template lives at [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md).)
+Every other plugin declares `fantasy-league-setup` as a dependency, so it should come along automatically; install it explicitly if your build doesn't pull it in. (Curious what the league interview will ask? A commented template lives at [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md).)
 
 ## What needs a browser
 
 **Nothing, for advice.** Every analysis skill works from information you paste — rankings, rosters, league settings, a trade offer.
 
-**Live reads and `roster-ops` need browser automation**: Codex's built-in Browser, [Claude in Chrome](https://www.anthropic.com/news/claude-in-chrome), or another authenticated browser your assistant supports. You sign into your fantasy platform yourself, once, in that browser — the skills use your session and never see your credentials. Without a browser, analysis skills tell you exactly what live data is missing, and `roster-ops` explains the clicks instead of making them.
+**Live reads and `roster-ops` need browser automation**: Codex's built-in Browser, ChatGPT's built-in browser, [Claude in Chrome](https://www.anthropic.com/news/claude-in-chrome), or another authenticated browser your assistant supports. You sign into your fantasy platform yourself, once, in that browser — the skills use your session and never see your credentials. Without a browser, analysis skills tell you exactly what live data is missing, and `roster-ops` explains the clicks instead of making them.
 
 ## Plugins and skills
 
@@ -57,6 +58,7 @@ Every plugin declares `fantasy-league-setup` as a dependency, so it should come 
 | | live-draft-assistant | "I'm on the clock", "who should I pick", "what's my max bid" |
 | | keeper-evaluation | "who should I keep", "is he worth keeping at that price" |
 | **lineup-strategy** | start-sit | "who should I start", "start or sit", "A or B at flex" |
+| | weekly-briefing | "what should I do this week", "weekly briefing", "run my week" |
 | **waiver-wire** | waiver-scan | "work the wire", "who should I pick up", "my guy got hurt, now what" |
 | | faab-bidding | "how much should I bid", "size my bid", "should I use my waiver priority on him" |
 | | drop-candidates | "who should I drop", "who's safe to cut" |
@@ -71,7 +73,7 @@ Note the advice/execution split: `start-sit` decides *who* to start and needs no
 
 ## Where the data comes from
 
-**This marketplace ships no data feed, platform connector, API integration, or scraper.** It works from two sources: data you paste, and pages read through your own logged-in browser — league rosters and free-agent pools, standings, transaction history, and rankings sites you have open. If you have more than one automated browser available, name the one you want; otherwise the skills use whichever has a signed-in session.
+**This marketplace ships no data feed, platform connector, API integration, or scraper.** It works from two sources: data you paste, and pages read through your own logged-in browser — league rosters and free-agent pools, standings, transaction history, and rankings sites you have open. If you name a browser, skills use that one. If `leagues.md` records a Preferred browser (for example `ChatGPT built-in`) and that session is signed in, skills use it. Otherwise they use any authenticated browser the current assistant already has.
 
 That means two things worth being clear about. There is no server anywhere holding your league data. Browser-assisted reads and `roster-ops` stop when you're logged out, while advice skills can still work from rankings, rosters, or settings you paste. The advice and execution skills share one security model: reading a page is free and needs no confirmation, but the advice skills will never click anything that changes your roster — every state change goes through `roster-ops` and its confirmation gate.
 

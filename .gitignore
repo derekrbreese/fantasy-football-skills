@@ -12,3 +12,7 @@ leagues.md
 # Editor
 .vscode/
 .idea/
+
+# Test artifacts
+__pycache__/
+*.pyc
