@@ -1,6 +1,6 @@
 # fantasy-football-skills
 
-A fantasy football plugin marketplace for ChatGPT, Codex, and [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) — portable to flat-skill harnesses like Grok Bot ([see below](#install-in-a-flat-skill-harness-grok-bot-and-similar)): draft strategy, weekly start/sit, waiver-wire management, trade analysis, and browser-driven roster operations. Install a plugin and your assistant picks up the right skill from natural phrases like *"who should I start"*, *"work the wire"*, or *"is this trade fair"*.
+A fantasy football plugin marketplace for ChatGPT, Codex, and [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces): draft strategy, weekly start/sit, waiver-wire management, trade analysis, and browser-driven roster operations. Install a plugin and your assistant picks up the right skill from natural phrases like *"who should I start"*, *"work the wire"*, or *"is this trade fair"*.
 
 ## Install in Codex
 
@@ -33,17 +33,6 @@ Then install the plugins you want:
 ```
 
 Each plugin declares `fantasy-league-setup` as a dependency. Current Claude Code builds expose dependency management, including auto-removal of unused dependencies; if your install does not pull `fantasy-league-setup` in automatically, install it explicitly with `/plugin install fantasy-league-setup@fantasy-football-skills`. The first time you use any skill, say *"set up my league"* — it interviews you once and writes a `leagues.md` file to your project. Every other skill reads that file for your scoring, roster slots, waiver system, and playoff weeks, so you never repeat yourself. A commented template lives at [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md).
-
-## Install in a flat-skill harness (Grok Bot and similar)
-
-Some agent harnesses have no plugin-bundle concept — their unit of installation is a single `SKILL.md` document (Grok Bot's workflow library, for example, imports one markdown file at a time). The skills port fine; the bundle structure doesn't. If you're adapting this marketplace to such a harness:
-
-- Import each of the 14 `plugins/*/skills/*/SKILL.md` files individually.
-- Rewrite cross-references: `plugin:skill` names (like `fantasy-league-setup:league-config`) become bare sibling names (`league-config`) — there is no namespace to qualify against.
-- Inline [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md) into the bottom of `league-config` if your harness imports single documents without companion files, and point `leagues.md` at a path the agent's runtime can always reach.
-- Swap the browser wording for whatever authenticated browser your harness drives; everything in the [security model](#roster-ops-security-model) — session-is-the-auth, confirmation gates, UI-never-API — must survive the port unchanged.
-
-Expect a fork, not a mirror: flat harnesses can't track marketplace versions, so treat the imported copies as a divergent set you update by re-importing.
 
 ### Prerequisites
 
