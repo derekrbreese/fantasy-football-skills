@@ -43,7 +43,7 @@ Then install the plugins you want:
 /plugin install roster-ops@fantasy-football-skills
 ```
 
-Every other plugin declares `fantasy-league-setup` as a dependency, so it should come along automatically; install it explicitly if your build doesn't pull it in. (Curious what the league interview will ask? A commented template lives at [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md).)
+Install `fantasy-league-setup` first. The other plugins don't require it to load: when `leagues.md` is missing, each skill asks for the league fields it needs and points you back to `league-config` to save them. (Curious what the league interview will ask? A commented template lives at [`leagues-template.md`](plugins/fantasy-league-setup/skills/league-config/leagues-template.md).)
 
 ## What needs a browser
 

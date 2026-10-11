@@ -71,7 +71,7 @@ class SkillContractTests(unittest.TestCase):
 
     def test_every_plugin_has_the_release_version(self) -> None:
         """Require marketplace and plugin manifests to share the release version."""
-        release = "1.2.0"
+        release = "1.2.1"
         marketplace = json.loads(text(ROOT / ".claude-plugin" / "marketplace.json"))
         self.assertEqual(release, marketplace.get("version"))
         manifests = sorted(ROOT.glob("plugins/*/.claude-plugin/plugin.json"))
@@ -81,14 +81,18 @@ class SkillContractTests(unittest.TestCase):
                 manifest = json.loads(text(path))
                 self.assertEqual(release, manifest.get("version"))
 
-    def test_every_contextual_plugin_declares_setup_dependency(self) -> None:
+    def test_no_plugin_hard_depends_on_setup(self) -> None:
+        """Keep setup a soft recommendation so a missing install cannot block loading.
+
+        Every skill already falls back to asking for league fields when
+        leagues.md is missing, so a manifest dependency only adds a way for
+        hosts that enforce dependencies to refuse the whole plugin.
+        """
         manifests = sorted(ROOT.glob("plugins/*/.claude-plugin/plugin.json"))
         for path in manifests:
-            if path.parents[1].name == "fantasy-league-setup":
-                continue
             with self.subTest(path=path):
                 manifest = json.loads(text(path))
-                self.assertIn("fantasy-league-setup", manifest.get("dependencies", []))
+                self.assertNotIn("fantasy-league-setup", manifest.get("dependencies", []))
 
     def test_live_source_routing_matches_the_canonical_contract(self) -> None:
         """Require every live-data skill to copy the generic routing contract."""

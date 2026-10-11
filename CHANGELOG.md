@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.1 — 2026-10-11
+
+- Removed the hard `fantasy-league-setup` manifest dependency from every
+  plugin. Hosts that enforce dependencies refused to load a plugin when
+  setup wasn't installed, even though every skill already falls back to
+  asking for league fields when `leagues.md` is missing. Setup is now a
+  recommendation in the README and skill text, not a load requirement.
+- Replaced the dependency-declaration test with one that forbids the hard
+  dependency.
+
 ## 1.2.0 — 2026-08-14
 
 - Made live-data routing generic: honor a named browser, then a
